@@ -1,9 +1,9 @@
-package main.java.engines;
+package main.java.engine;
 
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class ForkLift extends Car{
+public class ForkLift extends Car implements Drawable{
 	
 	float payload_mass = 0;
 	
