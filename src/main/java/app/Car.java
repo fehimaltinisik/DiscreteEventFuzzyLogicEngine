@@ -1,15 +1,17 @@
-package main.java.engine;
+package main.java.app;
 
 import processing.core.PApplet;
 import processing.core.PVector;
 import main.java.utils.CVector;
 
-public class Car extends Agent implements Drivable, Interactable{
+public class Car extends Agent implements Drivable, Interactable, Tracable{
 	PApplet applet;
 	
 	protected PVector position;
 	protected CVector velocity;	
 	protected PVector acceleration;
+	
+	protected boolean firstPersonCameraEnabled = false;
 	
 	private float max_velocity = 2.0f;
 	private float mass = 10;
@@ -69,6 +71,10 @@ public class Car extends Agent implements Drivable, Interactable{
 		
 		acceleration.mult(0);
 		updateHeading();
+		
+		if (firstPersonCameraEnabled) {
+			firstPersonCamera();
+		}
 	}
 	
 	public void operate() {
@@ -106,6 +112,16 @@ public class Car extends Agent implements Drivable, Interactable{
 			keys[2] = false;
 			keys[3] = false;
 		}
+	}
+	
+	public void toggleFirstPersonCamera() {
+		firstPersonCameraEnabled = !firstPersonCameraEnabled;
+	}
+	
+	public void firstPersonCamera() {
+		applet.camera(position.x + 150 * PApplet.cos(heading + PApplet.PI),
+			position.y + 150 * PApplet.sin(heading + PApplet.PI), 100, position.x,
+			position.y, position.z, (float) 0, (float) 0, (float) -1.0);
 	}
 	
 	public float getHeading() { return heading; }

@@ -1,13 +1,13 @@
-package main.java.engine;
+package main.java.app;
 
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class ForkLift extends Car implements Drawable{
+public class Forklift extends Car implements Drawable{
 	
 	float payload_mass = 0;
 	
-	public ForkLift(PApplet applet, PVector position, PVector velocity) {
+	public Forklift(PApplet applet, PVector position, PVector velocity) {
 		super(applet, position, velocity);
 	}
 	
