@@ -1,8 +1,8 @@
-package main;
+package main.java.app;
 
 import processing.core.PApplet;
 import processing.core.PVector;
-import engines.ForkLift;
+import main.java.engines.ForkLift;
 import peasy.*;
 
 public class Run extends PApplet {
@@ -18,7 +18,7 @@ public class Run extends PApplet {
 	float[][] terrain;
 
 	public static void main(String[] args) {
-		PApplet.main("main.Run");
+		PApplet.main("main.java.app.Run");
 	}
 
 	public void settings() {
@@ -62,7 +62,6 @@ public class Run extends PApplet {
 //		camera(car.position.x + 150 * cos(car.heading + PI),
 //		car.position.y + 150 * sin(car.heading + PI), 100, car.position.x,
 //		car.position.y, car.position.z, (float) 0, (float) 0, (float) -1.0);
-		
 
 		drawAxis();
 
@@ -89,7 +88,6 @@ public class Run extends PApplet {
 		car.operate();
 		car.update();
 		car.draw();
-
 	}
 
 	public void drawAxis() {
@@ -107,7 +105,6 @@ public class Run extends PApplet {
 		line(0, 0, -100, 0, 0, 100);
 		// fill(255);
 		text("Z", 0, 0, 90);
-
 	}
 
 }

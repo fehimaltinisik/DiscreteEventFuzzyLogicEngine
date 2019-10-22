@@ -1,4 +1,4 @@
-package engines;
+package main.java.engines;
 
 public interface Environment {
 	public void registerAgents();
