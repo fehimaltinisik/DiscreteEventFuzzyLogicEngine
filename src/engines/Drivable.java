@@ -1,8 +1,11 @@
 package engines;
 
 interface Drivable {
-	public void draw();
+	public void thrust() ;
+	
+	public void breaks() ;
 
-	public void operate();
-	public void update();
+	public void steerLeft() ;
+	
+	public void steerRight() ;
 }
