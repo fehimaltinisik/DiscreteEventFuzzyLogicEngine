@@ -1,8 +1,12 @@
 package main.java.space;
 
+import java.util.List;
+
+import main.java.app.agents.Agent;
+import main.java.space.items.Item;
 import processing.core.PApplet;
 
-public class Desert extends Workspace implements Environment{
+public class Desert extends Workspace{
 	
 	private float terrain_roughness = .01f;
 	
@@ -10,8 +14,12 @@ public class Desert extends Workspace implements Environment{
 		super(applet);
 	}
 	
+	public Desert() {
+		
+	}
+	
 	@Override
-	public void registerAgents() {
+	public void registerAgents(List<Agent> agents) {
 		// TODO Auto-generated method stub
 	}
 
@@ -42,6 +50,18 @@ public class Desert extends Workspace implements Environment{
 
 	@Override
 	public void draw() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void simulate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void registerItems(List<Item> items) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -1,7 +1,10 @@
-package main.java.app;
+package main.java.app.agents;
 
 import processing.core.PApplet;
 import processing.core.PVector;
+import main.java.app.agents.options.Drivable;
+import main.java.app.agents.options.Interactable;
+import main.java.app.agents.options.Tracable;
 import main.java.utils.CVector;
 
 public class Car extends Agent implements Drivable, Interactable, Tracable{
@@ -12,8 +15,9 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 	protected PVector acceleration;
 	
 	protected boolean firstPersonCameraEnabled = false;
+	protected boolean manualDrivingEnabled = false;
 	
-	private float max_velocity = 2.0f;
+	private float maxVelocity = 3.0f;
 	private float mass = 10;
 	
 	protected float heading = 0;
@@ -29,7 +33,20 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		heading = velocity.heading() - PApplet.HALF_PI;
 	}
 	
-	private void updateHeading() {
+	public Car(PApplet applet) {
+		this.applet = applet;
+		
+	}
+	
+	public void spawn(PVector position, PVector velocity) {
+		this.position = position;
+		this.velocity = new CVector(velocity.x, velocity.y, velocity.z);
+		this.acceleration = new PVector(0, 0, 0);
+		heading = velocity.heading() - PApplet.HALF_PI;
+	}
+	
+	// FIXME : Access modifier is private.
+	protected void updateHeading() {
 		if (velocity.mag() > 0.05)
 			heading = velocity.heading();
 	}
@@ -66,7 +83,7 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		
 		acceleration.div(mass);
 		velocity.add(acceleration);
-		velocity.limit(max_velocity);
+		velocity.limit(maxVelocity);
 		position.add(velocity);
 		
 		acceleration.mult(0);
@@ -77,20 +94,66 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		}
 	}
 	
+	public void draw() {		
+		applet.pushMatrix();
+		applet.translate(position.x, position.y, position.z);
+
+		applet.fill(255, 0, 0);
+		applet.stroke(192);
+				
+		applet.beginShape(PApplet.TRIANGLE_STRIP);
+						
+		applet.rotateZ(heading - PApplet.HALF_PI);
+		
+		// BOTTOM
+		applet.vertex(10, 0, 0);
+		applet.vertex(0, 0, 0);
+		applet.vertex(5, 20, 0);
+		
+		// LEFT
+		applet.vertex(10, -0, 0);
+		applet.vertex(10, -0, 5);
+		applet.vertex(5, 20, 0);
+		applet.vertex(5, 20, 5);
+
+		// UP
+		applet.vertex(10, 0, 5);
+		applet.vertex(0, 0, 5);
+		applet.vertex(5, 20, 5);
+		
+		// RIGHT
+		applet.vertex(0, 0, 5);
+		applet.vertex(0, 0, 0);		
+		applet.vertex(5, 20, 5);
+		applet.vertex(5, 20, 0);
+		
+		applet.endShape();
+
+		applet.popMatrix();
+		
+	}
+	
 	public void operate() {
-		registerKeys();
 		
-		if (keys[0]) 
-			thrust();
+		if (manualDrivingEnabled) {
+			registerKeys();
 			
-		if (keys[1]) 
+			if (keys[0]) 
+				thrust();
+				
+			if (keys[1]) 
+				steerLeft();
+			
+			if (keys[3])
+				steerRight();
+			
+			if (keys[2]) 
+				breaks();
+		}else {
+			thrust();
 			steerLeft();
+		}
 		
-		if (keys[3])
-			steerRight();
-		
-		if (keys[2]) 
-			breaks();
 	}
 
 	public void registerKeys() {
@@ -116,6 +179,10 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 	
 	public void toggleFirstPersonCamera() {
 		firstPersonCameraEnabled = !firstPersonCameraEnabled;
+	}
+	
+	public void toggleManualDriving() {
+		manualDrivingEnabled = !manualDrivingEnabled;
 	}
 	
 	public void firstPersonCamera() {

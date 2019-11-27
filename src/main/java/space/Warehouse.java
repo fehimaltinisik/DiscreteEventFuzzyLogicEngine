@@ -1,17 +1,32 @@
 package main.java.space;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import main.java.app.agents.Agent;
+import main.java.app.agents.Forklift;
+import main.java.space.items.Item;
 import processing.core.PApplet;
 
-public class Warehouse extends Workspace implements Environment{
+public class Warehouse extends Workspace{
+	
+	private List<Forklift> forklifts = new ArrayList<Forklift>();
+	private List<Item> products = new ArrayList<Item>();
 	
 	public Warehouse(PApplet applet) {
 		super(applet);
 	}
 	
+	public Warehouse() {
+	
+	}
+	
 	@Override
-	public void registerAgents() {
-		// TODO Auto-generated method stub
+	public void registerAgents(List<Agent> agents) {
 		
+		List<Forklift> forklifts = (List<Forklift>)(List<?>) agents;
+		this.forklifts.addAll(forklifts);
+		discreteEventEngine.registerElements((List<Agent>)(List<?>) this.forklifts);
 	}
 
 	@Override
@@ -51,7 +66,23 @@ public class Warehouse extends Workspace implements Environment{
 			applet.endShape();
 		}
 
-		applet.popMatrix();		
+		applet.popMatrix();
+		
+		for(Item item: products) {
+			item.draw();
+		}
+	}
+
+	@Override
+	public void simulate() {
+		discreteEventEngine.step();
+		
+	}
+
+	@Override
+	public void registerItems(List<Item> items) {
+		this.products.addAll(items);
+		
 	}
 	
 }

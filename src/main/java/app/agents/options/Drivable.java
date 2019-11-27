@@ -1,6 +1,6 @@
-package main.java.app;
+package main.java.app.agents.options;
 
-interface Drivable {
+public interface Drivable {
 	public void thrust() ;
 	
 	public void breaks() ;

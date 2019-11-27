@@ -1,9 +1,7 @@
 package main.java.space;
 
-import main.java.app.Drawable;
+import main.java.Drawable;
 
 public interface Environment extends Drawable{
-	public void registerAgents();
-	public float [][] terrainFactory();
-	public float [][] assetsFactory();
+	public void simulate();
 }
