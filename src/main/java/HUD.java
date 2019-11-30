@@ -47,8 +47,6 @@ public class HUD {
 		int functionXOffset = widthOffset;
 		int functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.50) * position;
 		
-		System.out.printf("%d, %d", functionXOffset, functionYOffset);
-
 		applet.fill(0, 255, 0);
 		applet.stroke(0, 255, 0);
 		
