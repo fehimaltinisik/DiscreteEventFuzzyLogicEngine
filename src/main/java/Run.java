@@ -4,7 +4,10 @@ import processing.core.PApplet;
 import processing.core.PVector;
 import peasy.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import main.java.app.agents.Forklift;
 import main.java.app.agents.Rover;
@@ -30,6 +33,9 @@ public class Run extends PApplet {
 	Workspace warehouse;
 
 	float[][] terrain;
+	
+	float qual_crisp = 6.5f;
+	float serv_crisp = 9.8f;
 
 	float[] x_qual = FuzzyMath.linspace(0, 10, 10);
 	float[] x_serv = FuzzyMath.linspace(0, 10, 10);
@@ -47,13 +53,13 @@ public class Run extends PApplet {
 	float [] tip_md = Membership.trimf(x_tip, 0, 13, 25);
 	float [] tip_hi = Membership.trimf(x_tip, 13, 25, 25);
 					
-	float qual_level_lo = FuzzyOperations.interpolateMembership(x_qual, qual_lo, 6.5f, true);
-	float qual_level_md = FuzzyOperations.interpolateMembership(x_qual, qual_md, 6.5f, true);
-	float qual_level_hi = FuzzyOperations.interpolateMembership(x_qual, qual_hi, 6.5f, true);
+	float qual_level_lo = FuzzyOperations.interpolateMembership(x_qual, qual_lo, qual_crisp, true);
+	float qual_level_md = FuzzyOperations.interpolateMembership(x_qual, qual_md, qual_crisp, true);
+	float qual_level_hi = FuzzyOperations.interpolateMembership(x_qual, qual_hi, qual_crisp, true);
 
-	float serv_level_lo = FuzzyOperations.interpolateMembership(x_serv, serv_lo, 9.8f, true);
-	float serv_level_md = FuzzyOperations.interpolateMembership(x_serv, serv_md, 9.8f, true);
-	float serv_level_hi = FuzzyOperations.interpolateMembership(x_serv, serv_hi, 9.8f, true);
+	float serv_level_lo = FuzzyOperations.interpolateMembership(x_serv, serv_lo, serv_crisp, true);
+	float serv_level_md = FuzzyOperations.interpolateMembership(x_serv, serv_md, serv_crisp, true);
+	float serv_level_hi = FuzzyOperations.interpolateMembership(x_serv, serv_hi, serv_crisp, true);
 	
 	float active_rule1 = FuzzyMath.fmax(qual_level_lo, serv_level_lo);
 	
@@ -103,8 +109,29 @@ public class Run extends PApplet {
 		camera = new PeasyCam(this, 250);
 		
 		hud = new HUD(this, camera, window_width, window_heigth);
-		hud.registerDiscreteFunction("x_qual", x_qual);
-		hud.registerDiscreteFunction("x_serv", x_serv);
+		
+		HashMap<String, float []> crips = new HashMap<String, float []>();
+		
+		crips.put("x_qual", new float[] {qual_crisp, qual_level_lo, qual_level_md, qual_level_hi});
+		crips.put("x_serv", new float[] {serv_crisp, serv_level_lo, serv_level_md, serv_level_hi});
+		
+		List<float[]> qual = new ArrayList<float[]>();
+		List<float[]> serv = new ArrayList<float[]>();
+		
+		qual.add(x_qual);
+		qual.add(qual_lo);
+		qual.add(qual_md);
+		qual.add(qual_hi);
+		
+		serv.add(x_serv);
+		serv.add(serv_lo);
+		serv.add(serv_md);
+		serv.add(serv_hi);
+		
+		hud.registerDiscreteFunction("x_qual", qual);
+		hud.registerDiscreteFunction("x_serv", serv);
+		
+		hud.updateDiscreteFunctionsInputs(crips);
 		
 		frameRate(30);
 		fill(120, 50, 240);
