@@ -9,7 +9,7 @@ import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import main.java.app.agents.Agent;
 import main.java.app.agents.Forklift;
-import main.java.app.agents.Rover;
+import main.java.app.agents.Automobile;
 import main.java.engine.fuzzytoolkit.FuzzyInferenceEngine;
 import main.java.space.items.Asset;
 import main.java.space.items.Item;
@@ -89,7 +89,7 @@ public class WorkspaceBuilder {
 			path.setPoints(points);
 			
 			for(int i = 0; i < 10; i++) {
-				Agent rover = new Rover(applet);
+				Agent rover = new Automobile(applet);
 				rover.spawn(new PVector(rand.nextInt(250), rand.nextInt(250), 0), new PVector(rand.nextFloat(), rand.nextFloat(), 0));
 				rover.registerAsset("Path", path);
 				agents.add(rover);

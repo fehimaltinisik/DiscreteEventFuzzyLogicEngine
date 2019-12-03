@@ -6,21 +6,14 @@ import peasy.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-
-import javax.xml.ws.Service;
 
 import main.java.app.agents.Forklift;
-import main.java.app.agents.Rover;
+import main.java.app.agents.Automobile;
 import main.java.engine.fuzzytoolkit.FuzzyMath;
 import main.java.engine.fuzzytoolkit.FuzzyOperations;
 import main.java.engine.fuzzytoolkit.Membership;
-import main.java.space.Environment;
-import main.java.space.Street;
 import main.java.space.Workspace;
 import main.java.space.WorkspaceBuilder;
 import main.java.space.WorkspaceFactory;
@@ -37,7 +30,7 @@ public class Run extends PApplet {
 	PeasyCam camera;
 	HUD hud;
 	
-	Rover rover;
+	Automobile automobile;
 	Forklift forklift;
 	
 	Workspace street;
@@ -110,10 +103,10 @@ public class Run extends PApplet {
 		
 		terrain = street.terrainFactory();
 
-		rover = new Rover(this, new PVector(10.0f, 10, terrain[15][15]), new PVector(1, 0, 0));
+		automobile = new Automobile(this, new PVector(10.0f, 10, terrain[15][15]), new PVector(1, 0, 0));
 		// rover.toggleManualDriving();
 		// rover.toggleFirstPersonCamera();
-		rover.setPath(path);
+		automobile.setPath(path);
 
 		forklift = new Forklift(this, new PVector(-0.0f, 0, terrain[18][18]), new PVector(0, 0, 0));
 		forklift.toggleManualDriving();
@@ -166,39 +159,7 @@ public class Run extends PApplet {
 		noStroke();
 		
 		System.out.println(tip);
-		
-		FuzzySolution solution = new FuzzySolution();
-		
-		solution.newFuzzyVariable("quality", 0, 10, 10, 3);
-		solution.newFuzzyVariable("service", 0, 10, 10, 3);
-		solution.newFuzzyVariable("tip", 0, 25, 25, 3);
-		
-		HashMap<String, Float> crispInputs = new HashMap<String, Float>(){/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-		{
-			put("quality", 6.5f);
-			put("service", 9.8f);
-		}};
-		
-		solution.updateCrispInputs(crispInputs);
-	
-		solution.newActivationRule("QxS", "quality", "service");
-		solution.evalActivationOutput("QxS", "0x0", "or", 0, 0);
-		solution.evalActivationOutput("QxS", "2x2", "or", 2, 2);
-		
-		solution.activate("QxS", "0x0", "tip", 0);
-		solution.activate("QxS", "2x2", "tip", 2);
-		solution.activate("service", 1, "tip", 1);
-		
-		solution.aggregate("tip");
-		solution.defuzz("tip", "tipdefuzz", "centroid");
-		
-		System.out.println(solution.getDefuzzified("tipdefuzz"));
-		
-		System.exit(0);
+				
 	}
 
 	public void draw() {

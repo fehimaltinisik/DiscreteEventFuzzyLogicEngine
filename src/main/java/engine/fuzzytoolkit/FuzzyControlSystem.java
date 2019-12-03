@@ -2,16 +2,56 @@ package main.java.engine.fuzzytoolkit;
 
 import java.util.HashMap;
 
-public class FuzzyControlSystem {
+import main.java.Drawable;
+
+public class FuzzyControlSystem implements Drawable{
 	
 	private FuzzySolution solution;
 	
 	public FuzzyControlSystem() {
 		
 	}
+
+	@Override
+	public void draw() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }
+
+//FuzzySolution solution = new FuzzySolution();
+//
+//solution.newFuzzyVariable("quality", 0, 10, 10, 3);
+//solution.newFuzzyVariable("service", 0, 10, 10, 3);
+//solution.newFuzzyVariable("tip", 0, 25, 25, 3);
+//
+//HashMap<String, Float> crispInputs = new HashMap<String, Float>(){/**
+//	 * 
+//	 */
+//	private static final long serialVersionUID = 1L;
+//
+//{
+//	put("quality", 6.5f);
+//	put("service", 9.8f);
+//}};
+//
+//solution.updateCrispInputs(crispInputs);
+//
+//solution.newActivationRule("QxS", "quality", "service");
+//solution.evalActivationOutput("QxS", "0x0", "or", 0, 0);
+//solution.evalActivationOutput("QxS", "2x2", "or", 2, 2);
+//
+//solution.activate("QxS", "0x0", "tip", 0);
+//solution.activate("QxS", "2x2", "tip", 2);
+//solution.activate("service", 1, "tip", 1);
+//
+//solution.aggregate("tip");
+//solution.defuzz("tip", "tipdefuzz", "centroid");
+//
+//System.out.println(solution.getDefuzzified("tipdefuzz"));
+
 
 //float qual_crisp = 6.5f;
 //float serv_crisp = 9.8f;

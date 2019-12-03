@@ -6,7 +6,7 @@ import main.java.space.items.Path;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class Rover extends Car{
+public class Automobile extends Car{
 	
 	private float maxVelocity = 2.0f;
 	private float maxForce = 0.05f;
@@ -15,11 +15,11 @@ public class Rover extends Car{
 	
 	private Path path;
 	
-	public Rover(PApplet applet, PVector position, PVector velocity) {
+	public Automobile(PApplet applet, PVector position, PVector velocity) {
 		super(applet, position, velocity);
 	}
 	
-	public Rover(PApplet applet) {
+	public Automobile(PApplet applet) {
 		super(applet);
 	}
 	
