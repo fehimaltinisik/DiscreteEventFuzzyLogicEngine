@@ -3,6 +3,7 @@ package main.java.space;
 import java.util.List;
 
 import main.java.app.agents.Agent;
+import main.java.space.items.Asset;
 import main.java.space.items.Item;
 import processing.core.PApplet;
 
@@ -61,7 +62,7 @@ public class Desert extends Workspace{
 	}
 
 	@Override
-	public void registerItems(List<Item> items) {
+	public void registerItem(String key, Asset item) {
 		// TODO Auto-generated method stub
 		
 	}

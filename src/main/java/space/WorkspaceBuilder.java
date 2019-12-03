@@ -1,13 +1,19 @@
 package main.java.space;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import main.java.app.agents.Agent;
 import main.java.app.agents.Forklift;
-import main.java.engine.DiscreteEventEngine;
+import main.java.app.agents.Rover;
 import main.java.engine.fuzzytoolkit.FuzzyInferenceEngine;
+import main.java.space.items.Asset;
 import main.java.space.items.Item;
+import main.java.space.items.Path;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -31,7 +37,6 @@ public class WorkspaceBuilder {
 	public void configure() {
 		workspace.setPApplet(applet);
 		workspace.setTerrainResolution(width, height);
-		workspace.setDiscreteEventEngine(new DiscreteEventEngine());
 		
 		if (workspace instanceof Warehouse) {
 			
@@ -59,9 +64,42 @@ public class WorkspaceBuilder {
 			products.add(item3);
 			
 			workspace.registerAgents(agents);
-			workspace.registerItems(products);
+			// workspace.registerItems(products);
+			
+		}else if(workspace instanceof Street) {
+			Random rand = new Random();
+			
+			List<Agent> agents = new ArrayList<Agent>();
+			List<Asset> assets = new ArrayList<Asset>();
+			
+			Path path = new Path(applet);
+			
+			ArrayList<PVector> points = new ArrayList<>(Arrays.asList( 
+					new PVector(-250, 0),
+					new PVector(-160, -160),
+					new PVector(0, -250),
+					new PVector(160, -160),
+					new PVector(250, 0),
+					new PVector(160, 160),
+					new PVector(0, 250),
+					new PVector(-160, 160),
+					new PVector(-250, 0)
+					));
+			
+			path.setPoints(points);
+			
+			for(int i = 0; i < 10; i++) {
+				Agent rover = new Rover(applet);
+				rover.spawn(new PVector(rand.nextInt(250), rand.nextInt(250), 0), new PVector(rand.nextFloat(), rand.nextFloat(), 0));
+				rover.registerAsset("Path", path);
+				agents.add(rover);
+			}
+			workspace.registerAgents(agents);
+			
+			assets.add(path);
+			
+			workspace.registerItem("Path", path);
 		}
-		
 	}
 	
 	public void setWorkspace(String workspaceSelection) {

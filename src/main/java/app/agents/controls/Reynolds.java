@@ -1,6 +1,8 @@
 package main.java.app.agents.controls;
 
 import main.java.app.agents.controls.steering.Steering;
+import main.java.space.Desert;
+import main.java.space.items.Path;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -41,6 +43,39 @@ public class Reynolds implements Steering{
 		}
 		
 		return desired;
+	}
+	
+	public PVector pathFollow(Path path) {
+		PVector predict = velocity.copy();
 		
+		predict.normalize();
+		predict.mult(25);
+		
+		PVector predictedLocation = PVector.add(position, predict);
+		
+		PVector a = PVector.sub(predictedLocation, path.getStart());
+		PVector b = PVector.sub(path.getEnd(), path.getStart());
+		
+		b.normalize();
+		b.mult(a.dot(b));
+		
+		PVector normalPoint = PVector.add(path.getStart(), b);
+		
+		b.normalize();
+		
+		float distance = PVector.dist(predictedLocation, normalPoint);
+		
+		PVector desired;
+		
+		if (distance > path.getRadius()) {
+			target = normalPoint;
+			desired = seek();
+		}else {
+			desired = predict.copy();
+		}
+		
+		// System.out.println(predictedLocation.toString());
+		
+		return desired;
 	}
 }

@@ -1,9 +1,9 @@
 package main.java.engine.fuzzytoolkit;
 
 public class FuzzyOperations {
-	public static float interpolateMembership(float[] x, float[] xmf, float crisp, boolean zero_outside_x) {	
+	public static float interpolateMembership(float[] x, float[] xmf, float crisp, boolean zeroOutsideX) {	
 		
-	if (zero_outside_x) {
+	if (zeroOutsideX) {
 		if(crisp < x[0] || crisp > x[x.length - 1] )
 			return 1;
 	}else {

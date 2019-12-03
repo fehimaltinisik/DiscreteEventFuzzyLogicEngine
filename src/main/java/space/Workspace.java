@@ -3,8 +3,8 @@ package main.java.space;
 import java.util.List;
 
 import main.java.app.agents.Agent;
-import main.java.engine.DiscreteEventEngine;
 import main.java.engine.fuzzytoolkit.FuzzyInferenceEngine;
+import main.java.space.items.Asset;
 import main.java.space.items.Item;
 import processing.core.PApplet;
 
@@ -17,8 +17,6 @@ public abstract class Workspace implements Environment{
 	protected int cols, rows, width, height;
 	
 	protected float[][] terrain;
-	
-	protected DiscreteEventEngine discreteEventEngine;
 				
 	public Workspace(PApplet applet) {
 		this.applet = applet;
@@ -29,7 +27,7 @@ public abstract class Workspace implements Environment{
 	}
 
 	public abstract void registerAgents(List<Agent> agents);
-	public abstract void registerItems(List<Item> items);
+	public abstract void registerItem(String key, Asset item);
 	
 	public abstract float [][] terrainFactory();
 	public abstract float [][] assetsFactory();
@@ -57,5 +55,4 @@ public abstract class Workspace implements Environment{
 	}
 
 	public void setPApplet(PApplet applet) { this.applet = applet; }
-	public void setDiscreteEventEngine(DiscreteEventEngine discreteEventEngine) { this.discreteEventEngine = discreteEventEngine; }
 }

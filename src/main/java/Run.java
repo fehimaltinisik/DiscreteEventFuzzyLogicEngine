@@ -6,8 +6,13 @@ import peasy.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+
+import javax.xml.ws.Service;
 
 import main.java.app.agents.Forklift;
 import main.java.app.agents.Rover;
@@ -15,14 +20,19 @@ import main.java.engine.fuzzytoolkit.FuzzyMath;
 import main.java.engine.fuzzytoolkit.FuzzyOperations;
 import main.java.engine.fuzzytoolkit.Membership;
 import main.java.space.Environment;
+import main.java.space.Street;
 import main.java.space.Workspace;
 import main.java.space.WorkspaceBuilder;
 import main.java.space.WorkspaceFactory;
+import main.java.space.items.Path;
+import main.java.engine.fuzzytoolkit.*;
 
 public class Run extends PApplet {
 	
 	int window_width = 1280;
 	int window_heigth = 768;
+	
+	int maximumCameraDistance = 1000;
 
 	PeasyCam camera;
 	HUD hud;
@@ -30,13 +40,15 @@ public class Run extends PApplet {
 	Rover rover;
 	Forklift forklift;
 	
-	Workspace warehouse;
+	Workspace street;
+	
+	Path path = new Path(this);
 
 	float[][] terrain;
 	
 	float qual_crisp = 6.5f;
 	float serv_crisp = 9.8f;
-
+	
 	float[] x_qual = FuzzyMath.linspace(0, 10, 10);
 	float[] x_serv = FuzzyMath.linspace(0, 10, 10);
 	float[] x_tip = FuzzyMath.linspace(0, 25, 25);
@@ -91,22 +103,24 @@ public class Run extends PApplet {
 		WorkspaceBuilder workspaceBuilder = new WorkspaceBuilder(this);
 		workspaceBuilder.setWorkspaceFactory(workspaceFactory);
 		
-		workspaceBuilder.setWorkspace("warehouse");
+		workspaceBuilder.setWorkspace("street");
 		workspaceBuilder.configure();
 		
-		warehouse = workspaceBuilder.getWorkspace();
+		street = workspaceBuilder.getWorkspace();
 		
-		terrain = warehouse.terrainFactory();
+		terrain = street.terrainFactory();
 
-		rover = new Rover(this, new PVector(-0.0f, 0, terrain[15][15]), new PVector(0, 0, 0));
+		rover = new Rover(this, new PVector(10.0f, 10, terrain[15][15]), new PVector(1, 0, 0));
 		// rover.toggleManualDriving();
 		// rover.toggleFirstPersonCamera();
+		rover.setPath(path);
 
 		forklift = new Forklift(this, new PVector(-0.0f, 0, terrain[18][18]), new PVector(0, 0, 0));
 		forklift.toggleManualDriving();
 		// rover.toggleFirstPersonCamera();
 
 		camera = new PeasyCam(this, 250);
+		camera.setMaximumDistance(maximumCameraDistance);
 		
 		hud = new HUD(this, camera, window_width, window_heigth);
 		
@@ -117,6 +131,20 @@ public class Run extends PApplet {
 		
 		List<float[]> qual = new ArrayList<float[]>();
 		List<float[]> serv = new ArrayList<float[]>();
+		
+		ArrayList<PVector> points = new ArrayList<>(Arrays.asList( 
+				new PVector(-250, 0),
+				new PVector(-160, -160),
+				new PVector(0, -250),
+				new PVector(160, -160),
+				new PVector(250, 0),
+				new PVector(160, 160),
+				new PVector(0, 250),
+				new PVector(-160, 160),
+				new PVector(-250, 0)
+				));
+		
+		path.setPoints(points);
 		
 		qual.add(x_qual);
 		qual.add(qual_lo);
@@ -138,28 +166,62 @@ public class Run extends PApplet {
 		noStroke();
 		
 		System.out.println(tip);
-				
+		
+		FuzzySolution solution = new FuzzySolution();
+		
+		solution.newFuzzyVariable("quality", 0, 10, 10, 3);
+		solution.newFuzzyVariable("service", 0, 10, 10, 3);
+		solution.newFuzzyVariable("tip", 0, 25, 25, 3);
+		
+		HashMap<String, Float> crispInputs = new HashMap<String, Float>(){/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+		{
+			put("quality", 6.5f);
+			put("service", 9.8f);
+		}};
+		
+		solution.updateCrispInputs(crispInputs);
+	
+		solution.newActivationRule("QxS", "quality", "service");
+		solution.evalActivationOutput("QxS", "0x0", "or", 0, 0);
+		solution.evalActivationOutput("QxS", "2x2", "or", 2, 2);
+		
+		solution.activate("QxS", "0x0", "tip", 0);
+		solution.activate("QxS", "2x2", "tip", 2);
+		solution.activate("service", 1, "tip", 1);
+		
+		solution.aggregate("tip");
+		solution.defuzz("tip", "tipdefuzz", "centroid");
+		
+		System.out.println(solution.getDefuzzified("tipdefuzz"));
+		
+		System.exit(0);
 	}
 
 	public void draw() {
 		background(0);
 
-		warehouse.draw();
-		warehouse.drawGuideLines();
+		street.draw();
+		street.drawGuideLines();
 		
-		warehouse.simulate();
+		street.simulate();
 								
 		forklift.operate();
 		forklift.update();
 		forklift.draw();
 		
-		rover.setTarget(forklift.getPosition());
+		// rover.setTarget(forklift.getPosition());	
+		// rover.operate();
+		// rover.update();
+		// rover.draw();
 		
-		rover.operate();
-		rover.update();
-		rover.draw();
+		// path.draw();
 		
 		hud.drawDiscreteFunctions("all");
+	
 	}
 }
 

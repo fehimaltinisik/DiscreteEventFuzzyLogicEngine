@@ -5,6 +5,7 @@ import java.util.List;
 
 import main.java.app.agents.Agent;
 import main.java.app.agents.Forklift;
+import main.java.space.items.Asset;
 import main.java.space.items.Item;
 import processing.core.PApplet;
 
@@ -23,10 +24,6 @@ public class Warehouse extends Workspace{
 	
 	@Override
 	public void registerAgents(List<Agent> agents) {
-		
-		List<Forklift> forklifts = (List<Forklift>)(List<?>) agents;
-		this.forklifts.addAll(forklifts);
-		discreteEventEngine.registerElements((List<Agent>)(List<?>) this.forklifts);
 	}
 
 	@Override
@@ -75,13 +72,12 @@ public class Warehouse extends Workspace{
 
 	@Override
 	public void simulate() {
-		discreteEventEngine.step();
 		
 	}
 
 	@Override
-	public void registerItems(List<Item> items) {
-		this.products.addAll(items);
+	public void registerItem(String key, Asset item) {
+		// this.products.addAll(items);
 		
 	}
 	
