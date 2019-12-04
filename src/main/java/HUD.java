@@ -76,15 +76,16 @@ public class HUD {
 							functionXOffset + xAxisLength * 0.05f + (domain[j] / domain_range) * xAxisLength * 0.9f, 
 							functionYOffset + yAxisLength * 0.2f + (1 - function[j]) * yAxisLength * 0.8f);
 							
-				applet.text(Integer.toString((int)domain[j - 1]), functionXOffset + xAxisLength * 0.05f + (domain[j - 1] / domain_range) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 8 * figureScale);
+				// applet.text(Integer.toString((int)domain[j - 1]), functionXOffset + xAxisLength * 0.05f + (domain[j - 1] / domain_range) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 8 * figureScale);
 			}
-			applet.text(Integer.toString((int)domain[domain.length - 1]), functionXOffset + xAxisLength * 0.05f + (domain[domain.length - 1] / domain_range) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 8 * figureScale);
+			// applet.text(Integer.toString((int)domain[domain.length - 1]), functionXOffset + xAxisLength * 0.05f + (domain[domain.length - 1] / domain_range) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 8 * figureScale);
 		}
 		
 		applet.fill(255, 0, 0);
 		applet.stroke(255, 0, 0);
 		
-		applet.circle(functionXOffset + xAxisLength * 0.05f + (x[0] / domain_range) * xAxisLength * 0.9f, functionYOffset + yAxisLength, inputRadius);
+		applet.circle(functionXOffset + xAxisLength * 0.05f + (x[0] / domain_range) * xAxisLength * 0.9f, 
+				functionYOffset + yAxisLength, inputRadius);
 		
 		for (int i = 1; i < x.length; i++)
 			applet.circle(functionXOffset + xAxisLength * 0.05f + (x[0] / domain_range) * xAxisLength * 0.9f, 
@@ -109,7 +110,7 @@ public class HUD {
 			while (discreteFunctionsIterator.hasNext() && discreteFunctionsInputsIterator.hasNext()) {
 		        Map.Entry<String, List<float []>> functionPair = (Map.Entry<String, List<float []>>)discreteFunctionsIterator.next();
 		        Map.Entry<String, float []> inputPair = (Map.Entry<String, float []>)discreteFunctionsInputsIterator.next();
-			        
+			        		        
 		        int nextYOffset = drawDiscreteFunction(functionPair.getKey(), functionPair.getValue(), counterX, counterY, inputPair.getValue());
 		        
 		        if (nextYOffset > windowHeigth) {

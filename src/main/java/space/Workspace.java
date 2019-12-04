@@ -3,7 +3,6 @@ package main.java.space;
 import java.util.List;
 
 import main.java.app.agents.Agent;
-import main.java.engine.fuzzytoolkit.FuzzyInferenceEngine;
 import main.java.space.items.Asset;
 import main.java.space.items.Item;
 import processing.core.PApplet;

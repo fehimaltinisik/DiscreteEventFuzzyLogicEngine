@@ -1,10 +1,10 @@
-package main.java.engine.fuzzytoolkit;
+package main.java.tools.fuzzytoolkit;
 
 public class FuzzyOperations {
 	public static float interpolateMembership(float[] x, float[] xmf, float crisp, boolean zeroOutsideX) {	
 		
 	if (zeroOutsideX) {
-		if(crisp < x[0] || crisp > x[x.length - 1] )
+		if(crisp < x[0] || crisp >= x[x.length - 1] )
 			return 1;
 	}else {
 		throw new IllegalArgumentException(String.format("Crisp value : %f is out bounds : [%.2f, %.2f]", 
@@ -32,8 +32,12 @@ public class FuzzyOperations {
 	float y2 = xmf[x2];
 	
 	float fuzzy = (float) (y1 + (decimal / (x2 - x1)) * (y2 - y1));
-	
-	// System.out.printf("%d, %.2f, %.2f\n", integer, decimal, fuzzy);
+
+//	System.out.printf("x1index: %d, x2index: %d,", x1, x2);
+//	System.out.printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x[x1], x[x2], y1, y2);
+//	System.out.printf("%d, %.2f, %.2f\n", integer, decimal, fuzzy);
+//	
+//	System.out.printf("%d, %.2f, %.2f\n", integer, decimal, fuzzy);
 	
 	return fuzzy;	
 	
@@ -77,6 +81,10 @@ public class FuzzyOperations {
 	        
 	    
 	    }
+	    
+//	    System.out.println(sum_moment_area);
+//	    System.out.println(sum_area);
+	    
 	    return sum_moment_area / FuzzyMath.fmax(sum_area,
                 FuzzyMath.finfo());
 	}

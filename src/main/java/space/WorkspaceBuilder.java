@@ -10,7 +10,6 @@ import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 import main.java.app.agents.Agent;
 import main.java.app.agents.Forklift;
 import main.java.app.agents.Automobile;
-import main.java.engine.fuzzytoolkit.FuzzyInferenceEngine;
 import main.java.space.items.Asset;
 import main.java.space.items.Item;
 import main.java.space.items.Path;

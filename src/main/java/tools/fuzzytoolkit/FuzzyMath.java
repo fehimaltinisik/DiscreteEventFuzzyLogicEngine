@@ -1,4 +1,4 @@
-package main.java.engine.fuzzytoolkit;
+package main.java.tools.fuzzytoolkit;
 
 import java.util.Arrays;
 import java.lang.Math;

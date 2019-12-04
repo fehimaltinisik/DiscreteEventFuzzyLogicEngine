@@ -1,4 +1,4 @@
-package main.java.engine.fuzzytoolkit;
+package main.java.tools.fuzzytoolkit;
 
 import java.util.Arrays;
 
@@ -50,7 +50,7 @@ public class Membership {
 			}
 		}
 		
-		// ssSystem.out.println(Arrays.toString(y));
+		System.out.println(Arrays.toString(y));
 		
 	    return y;
 

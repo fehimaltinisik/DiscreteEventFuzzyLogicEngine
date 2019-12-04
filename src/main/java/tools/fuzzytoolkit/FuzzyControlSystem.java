@@ -1,24 +1,64 @@
-package main.java.engine.fuzzytoolkit;
+package main.java.tools.fuzzytoolkit;
 
 import java.util.HashMap;
 
 import main.java.Drawable;
+import main.java.HUD;
+import peasy.PeasyCam;
+import processing.core.PApplet;
 
-public class FuzzyControlSystem implements Drawable{
+public abstract class FuzzyControlSystem implements Drawable{
 	
-	private FuzzySolution solution;
+	protected HUD hud;
+	protected PApplet applet;
+	protected PeasyCam camera;
+	protected FuzzySolution solution;
 	
-	public FuzzyControlSystem() {
-		
+	protected boolean toggleDraw = false;
+	protected boolean toggleDrawMimimal = false;
+	
+	public FuzzyControlSystem(PApplet applet, boolean toggleDraw, boolean toggleDrawMinimal) {
+		this.applet = applet;
+		this.toggleDraw = toggleDraw;
+		this.toggleDrawMimimal = toggleDrawMinimal;
 	}
-
-	@Override
-	public void draw() {
-		// TODO Auto-generated method stub
+	
+	public abstract void systemUpdate();
+	
+	public abstract void solutionFactory();
+	
+	public abstract void registerCrispInputs(HashMap<String, Float> crispInputs);
+	
+	public abstract void evaluateCrispInputs();
+	
+	public abstract void debug();
+	
+	public abstract void guiStateUpdate();
+	
+	public void toggleDrawing() { 
+		toggleDraw = !toggleDraw;
 		
+		if (toggleDraw) {
+			if (hud == null) {
+				hud = new HUD(applet, camera, 1280, 768);
+			}
+		}
+		
+		guiStateUpdate();
 	}
 	
+	public void toggleDrawingMinimal() { 
+		toggleDrawMimimal = !toggleDrawMimimal;
+		if (toggleDraw) {
+			if (hud == null) {
+				hud = new HUD(applet, camera, 1280, 768);
+			}
+		}
+		
+		guiStateUpdate();
+	}
 	
+	public void setCamera(PeasyCam camera) { this.camera = camera;}
 }
 
 //FuzzySolution solution = new FuzzySolution();
