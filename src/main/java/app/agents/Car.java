@@ -1,6 +1,7 @@
 package main.java.app.agents;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PVector;
 import main.java.app.agents.options.Drivable;
 import main.java.app.agents.options.Interactable;
@@ -30,7 +31,7 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		this.velocity = new CVector(velocity.x, velocity.y, velocity.z);
 		this.acceleration = new PVector(0, 0, 0);
 		
-		heading = velocity.heading() - PApplet.HALF_PI;
+		heading = velocity.heading() - PConstants.HALF_PI;
 	}
 	
 	public Car(PApplet applet) {
@@ -38,11 +39,12 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		
 	}
 	
+	@Override
 	public void spawn(PVector position, PVector velocity) {
 		this.position = position;
 		this.velocity = new CVector(velocity.x, velocity.y, velocity.z);
 		this.acceleration = new PVector(0, 0, 0);
-		heading = velocity.heading() - PApplet.HALF_PI;
+		heading = velocity.heading() - PConstants.HALF_PI;
 	}
 	
 	// FIXME : Access modifier is private.
@@ -51,34 +53,39 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 			heading = velocity.heading();
 	}
 	
+	@Override
 	public void thrust() {
 		PVector force;
-		force = CVector.fromAngle(heading);
+		force = PVector.fromAngle(heading);
 		acceleration.add(force);
 	}
 	
+	@Override
 	public void breaks() {
 		if (velocity.mag() < 0.05) {
 			velocity.sub(velocity);
 			return;
 		}
 		PVector force;
-		force = CVector.fromAngle(heading + PApplet.PI);
+		force = PVector.fromAngle(heading + PConstants.PI);
 		acceleration.add(force);
 	}
 
+	@Override
 	public void steerLeft() {
 		PVector force;
-		force = PVector.fromAngle(heading - PApplet.HALF_PI);
+		force = PVector.fromAngle(heading - PConstants.HALF_PI);
 		acceleration.add(force);
 	}
 	
+	@Override
 	public void steerRight() {
 		PVector force;
-		force = PVector.fromAngle(heading + PApplet.HALF_PI);
+		force = PVector.fromAngle(heading + PConstants.HALF_PI);
 		acceleration.add(force);
 	}
 	
+	@Override
 	public void update() {
 		
 		acceleration.div(mass);
@@ -94,6 +101,7 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		}
 	}
 	
+	@Override
 	public void draw() {		
 		applet.pushMatrix();
 		applet.translate(position.x, position.y, position.z);
@@ -101,9 +109,9 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		applet.fill(255, 0, 0);
 		applet.stroke(192);
 				
-		applet.beginShape(PApplet.TRIANGLE_STRIP);
+		applet.beginShape(PConstants.TRIANGLE_STRIP);
 						
-		applet.rotateZ(heading - PApplet.HALF_PI);
+		applet.rotateZ(heading - PConstants.HALF_PI);
 		
 		// BOTTOM
 		applet.vertex(10, 0, 0);
@@ -133,6 +141,7 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		
 	}
 	
+	@Override
 	public void operate() {
 		
 		if (manualDrivingEnabled) {
@@ -156,6 +165,7 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		
 	}
 
+	@Override
 	public void registerKeys() {
 
 		if (applet.keyPressed) {
@@ -185,10 +195,11 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		manualDrivingEnabled = !manualDrivingEnabled;
 	}
 	
+	@Override
 	public void firstPersonCamera() {
-		applet.camera(position.x + 150 * PApplet.cos(heading + PApplet.PI),
-			position.y + 150 * PApplet.sin(heading + PApplet.PI), 100, position.x,
-			position.y, position.z, (float) 0, (float) 0, (float) -1.0);
+		applet.camera(position.x + 150 * PApplet.cos(heading + PConstants.PI),
+			position.y + 150 * PApplet.sin(heading + PConstants.PI), 100, position.x,
+			position.y, position.z, 0, 0, (float) -1.0);
 	}
 	
 	public float getHeading() { return heading; }

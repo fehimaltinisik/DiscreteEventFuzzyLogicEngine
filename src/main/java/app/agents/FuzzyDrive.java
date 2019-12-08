@@ -1,25 +1,30 @@
 package main.java.app.agents;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import main.java.space.items.Asset;
 import main.java.space.items.Path;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class Automobile extends Car{
+public class FuzzyDrive extends Automobile{
+	
+	List<Agent> radar = new ArrayList<Agent>();
 	
 	private float maxVelocity = 2.0f;
 	private float maxForce = 0.05f;
 	
-	protected PVector target;
+	private PVector target;
 	
-	protected Path path;
+	private Path path;
 	
-	public Automobile(PApplet applet, PVector position, PVector velocity) {
+	public FuzzyDrive(PApplet applet, PVector position, PVector velocity) {
 		super(applet, position, velocity);
 	}
 	
-	public Automobile(PApplet applet) {
+	public FuzzyDrive(PApplet applet) {
 		super(applet);
 	}
 	
@@ -45,36 +50,12 @@ public class Automobile extends Car{
 	@Override
 	public void operate() {
 		pathFollow();
+		separate();
 	}
 	
-	public void seek() {
-		
-		PVector desired = PVector.sub(target, position);
-	    desired.normalize();
-	    desired.mult(maxVelocity);
-	    
-	    PVector steer = PVector.sub(desired,velocity);
-	    steer.limit(maxForce);
-	    applyForce(steer);
-	    
-	}
-	
-	public void arrive() {
-		PVector desired = PVector.sub(target, position);
-		float distance = desired.mag();
-		desired.normalize();
-		
-		if(distance < 30) {
-			float multiplier = PApplet.map(distance, 0, 100, 0, maxVelocity);
-			desired.mult(multiplier);
-		}else {
-			desired.mult(maxVelocity);
-		}
-		
-		PVector steer = PVector.sub(desired,velocity);
-	    steer.limit(maxForce);
-	    applyForce(steer);
-	    
+	public void updateRadar(List<Agent> vehicles) {
+		radar.clear();
+		radar.addAll(vehicles);
 	}
 	
 	public void pathFollow() {
@@ -134,10 +115,39 @@ public class Automobile extends Car{
 	      seek();
 		}
 	}
-	
-	
-	
-	public void setPath(Path path) { this.path = path; }
-	
-	public void setTarget(PVector target) { this.target = target; }
+	public void separate () {
+	    float desiredseparation = 20 * 2;
+	    PVector steer = new PVector(0, 0, 0);
+	    int count = 0;
+		// For every boid in the system, check if it's too close
+	    for (int i = 0 ; i < radar.size(); i++) {
+	      FuzzyDrive other = (FuzzyDrive) radar.get(i);
+	      float d = PVector.dist(position, other.position);
+	      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+	      if ((d > 0) && (d < desiredseparation)) {
+	        // Calculate vector pointing away from neighbor
+	        PVector diff = PVector.sub(position, other.position);
+	        diff.normalize();
+	        diff.div(d);        // Weight by distance
+	        steer.add(diff);
+	        count++;            // Keep track of how many
+	      }
+	    }
+	    // Average -- divide by how many
+	    if (count > 0) {
+	      steer.div((float)count);
+	    }
+
+	    // As long as the vector is greater than 0
+	    if (steer.mag() > 0) {
+	      // Implement Reynolds: Steering = Desired - Velocity
+	      steer.normalize();
+	      steer.mult(maxVelocity);
+	      steer.sub(velocity);
+	      steer.limit(maxForce);
+	    }
+
+	    applyForce(steer.mult(1.5f));
+	    
+	  }
 }

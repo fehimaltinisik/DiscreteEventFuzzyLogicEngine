@@ -4,7 +4,6 @@ import java.util.List;
 
 import main.java.app.agents.Agent;
 import main.java.space.items.Asset;
-import main.java.space.items.Item;
 import processing.core.PApplet;
 
 public class Desert extends Workspace{
@@ -63,6 +62,12 @@ public class Desert extends Workspace{
 
 	@Override
 	public void registerItem(String key, Asset item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void radar() {
 		// TODO Auto-generated method stub
 		
 	}

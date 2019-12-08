@@ -1,7 +1,6 @@
 package main.java.tools.fuzzytoolkit;
 
 import java.util.Arrays;
-import java.lang.Math;
 
 public class FuzzyMath{
 	public static float fmin(float left, float right) {

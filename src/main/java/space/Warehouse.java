@@ -8,6 +8,7 @@ import main.java.app.agents.Forklift;
 import main.java.space.items.Asset;
 import main.java.space.items.Item;
 import processing.core.PApplet;
+import processing.core.PConstants;
 
 public class Warehouse extends Workspace{
 	
@@ -55,7 +56,7 @@ public class Warehouse extends Workspace{
 		applet.stroke(127);
 
 		for (int y = 0; y < rows - 1; y++) {
-			applet.beginShape(PApplet.TRIANGLE_STRIP);
+			applet.beginShape(PConstants.TRIANGLE_STRIP);
 			for (int x = 0; x < cols; x++) {
 				applet.vertex(x * scale, y * scale, terrain[x][y]);
 				applet.vertex(x * scale, (y + 1) * scale, terrain[x][y + 1]);
@@ -78,6 +79,12 @@ public class Warehouse extends Workspace{
 	@Override
 	public void registerItem(String key, Asset item) {
 		// this.products.addAll(items);
+		
+	}
+
+	@Override
+	public void radar() {
+		// TODO Auto-generated method stub
 		
 	}
 	

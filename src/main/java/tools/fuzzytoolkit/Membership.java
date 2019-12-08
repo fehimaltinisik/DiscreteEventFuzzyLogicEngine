@@ -22,7 +22,7 @@ public class Membership {
 			
 			for (int i = 0; i < temp.length; i++) {
 				if (temp[i] != 0) {
-					y[i] = (x[i] - a) / (float)(b - a);
+					y[i] = (x[i] - a) / (b - a);
 				}else
 					continue;
 			}
@@ -38,7 +38,7 @@ public class Membership {
 			
 			for (int i = 0; i < temp.length; i++) {
 				if (temp[i] != 0) {
-					y[i] = (c - x[i] ) / (float)(c - b);
+					y[i] = (c - x[i] ) / (c - b);
 				}else
 					continue;
 			}

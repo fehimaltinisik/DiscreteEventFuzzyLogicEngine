@@ -2,13 +2,7 @@ package main.java.tools.fuzzytoolkit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 import main.java.Drawable;
 
 public class FuzzyVariable implements Drawable{
@@ -93,7 +87,7 @@ public class FuzzyVariable implements Drawable{
 			System.arraycopy(FuzzyMath.fmax(activations.get(i), aggregated), 0, aggregated, 0, aggregated.length);
 		}
 		
-		System.out.println(Arrays.toString(aggregated));
+		// System.out.println(Arrays.toString(aggregated));
 	}
 	
 	public float[] getMembershipFunction(int index) {

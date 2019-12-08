@@ -1,10 +1,8 @@
 package main.java.tools.fuzzytoolkit.solutions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javafx.scene.shape.QuadCurve;
 import main.java.HUD;
 import main.java.tools.fuzzytoolkit.FuzzyControlSystem;
 import main.java.tools.fuzzytoolkit.FuzzySolution;

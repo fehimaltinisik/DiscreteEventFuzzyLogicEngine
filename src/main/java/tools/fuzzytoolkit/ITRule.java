@@ -1,8 +1,6 @@
 package main.java.tools.fuzzytoolkit;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class ITRule {
 	

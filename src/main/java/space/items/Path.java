@@ -2,7 +2,6 @@ package main.java.space.items;
 
 import java.util.ArrayList;
 
-import peasy.PeasyCam;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -25,6 +24,7 @@ public class Path extends Asset{
 		end = new PVector(150, 150);
 	}
 
+	@Override
 	public void draw() {
 
 		applet.beginShape();

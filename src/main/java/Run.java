@@ -1,22 +1,19 @@
 package main.java;
 
-import processing.core.PApplet;
-import processing.core.PVector;
-import peasy.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-import main.java.app.agents.Forklift;
 import main.java.app.agents.Automobile;
+import main.java.app.agents.Forklift;
 import main.java.space.Workspace;
 import main.java.space.WorkspaceBuilder;
 import main.java.space.WorkspaceFactory;
 import main.java.space.items.Path;
-import main.java.tools.fuzzytoolkit.*;
 import main.java.tools.fuzzytoolkit.solutions.TippingProblem;
+import peasy.PeasyCam;
+import processing.core.PApplet;
+import processing.core.PVector;
 
 public class Run extends PApplet {
 	
@@ -43,10 +40,12 @@ public class Run extends PApplet {
 		PApplet.main("main.java.Run");
 	}
 
+	@Override
 	public void settings() {
 		size(window_width, window_heigth, P3D);
 	}
 
+	@Override
 	public void setup() {
 		
 		WorkspaceFactory workspaceFactory = new WorkspaceFactory();
@@ -88,21 +87,6 @@ public class Run extends PApplet {
 		
 		path.setPoints(points);
 		
-//		qual.add(x_qual);
-//		qual.add(qual_lo);
-//		qual.add(qual_md);
-//		qual.add(qual_hi);
-//		
-//		serv.add(x_serv);
-//		serv.add(serv_lo);
-//		serv.add(serv_md);
-//		serv.add(serv_hi);
-//		
-//		hud.registerDiscreteFunction("x_qual", qual);
-//		hud.registerDiscreteFunction("x_serv", serv);
-//		
-//		hud.updateDiscreteFunctionsInputs(crips);
-		
 		frameRate(30);
 		fill(120, 50, 240);
 		noStroke();
@@ -117,6 +101,7 @@ public class Run extends PApplet {
 	float f1 = 6.5f;
 	float f2 = 9.8f;
 
+	@Override
 	public void draw() {
 		background(0);
 
@@ -139,13 +124,9 @@ public class Run extends PApplet {
 		tippingProblem.systemUpdate();
 		
 		tippingProblem.evaluateCrispInputs();
-		
-		tippingProblem.debug();
-		
+				
 		tippingProblem.draw();
-		
-		System.exit(0);
-		
+				
 	}
 }
 

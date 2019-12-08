@@ -19,6 +19,7 @@ public class CVector extends PVector {
 		super(x, y, z);
 	}
 
+	@Override
 	public String toString() {
 		return String.format("[ %+.2f, %+.2f, %+.2f ]", x, y, z);
 	}
