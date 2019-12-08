@@ -1,7 +1,6 @@
 package main.java.app.agents.controls;
 
 import main.java.app.agents.controls.steering.Steering;
-import main.java.space.Desert;
 import main.java.space.items.Path;
 import processing.core.PApplet;
 import processing.core.PVector;

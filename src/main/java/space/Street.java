@@ -8,21 +8,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import main.java.app.agents.Agent;
+import main.java.app.agents.SmartDrive;
 import main.java.space.items.Asset;
-import main.java.space.items.Item;
 import processing.core.PApplet;
+import processing.core.PConstants;
 
 public class Street extends Workspace{
 	
-	private HashMap<String, Asset> assets = new HashMap<String, Asset>();
-	private List<Agent> vehicles = new ArrayList<Agent>();
-
 	@Override
-	public void simulate() {
-		for(Agent agent : vehicles) {
-			agent.operate();
-			agent.update();
-			agent.draw();
+	public void radar() {		
+		for(Agent agent : agents) {
+			((SmartDrive)agent).updateRadar(agents);
 		}
 	}
 
@@ -35,7 +31,7 @@ public class Street extends Workspace{
 		applet.stroke(127);
 
 		for (int y = 0; y < rows - 1; y++) {
-			applet.beginShape(PApplet.TRIANGLE_STRIP);
+			applet.beginShape(PConstants.TRIANGLE_STRIP);
 			for (int x = 0; x < cols; x++) {
 				applet.vertex(x * scale, y * scale, terrain[x][y]);
 				applet.vertex(x * scale, (y + 1) * scale, terrain[x][y + 1]);
@@ -45,22 +41,12 @@ public class Street extends Workspace{
 
 		applet.popMatrix();
 		
-		Iterator<Entry<String, Asset>> assetsIterator = this.assets.entrySet().iterator();
+		Iterator<Entry<String, Asset>> itemsIterator = items.entrySet().iterator();
 		
-		while (assetsIterator.hasNext()) {
-	        Map.Entry<String, Asset> agent = (Map.Entry<String, Asset>)assetsIterator.next();
+		while (itemsIterator.hasNext()) {
+	        Map.Entry<String, Asset> agent = itemsIterator.next();
 		    agent.getValue().draw();
 		}
-	}
-
-	@Override
-	public void registerAgents(List<Agent> agents) {
-		vehicles.addAll(agents);
-	}
-
-	@Override
-	public void registerItem(String key, Asset item) {
-		assets.put(key, item);
 	}
 
 	@Override

@@ -5,10 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
 import main.java.app.agents.Agent;
 import main.java.app.agents.Forklift;
+import main.java.app.agents.SmartDrive;
 import main.java.app.agents.Automobile;
 import main.java.space.items.Asset;
 import main.java.space.items.Item;
@@ -87,16 +86,16 @@ public class WorkspaceBuilder {
 			
 			path.setPoints(points);
 			
-			for(int i = 0; i < 10; i++) {
-				Agent rover = new Automobile(applet);
-				rover.spawn(new PVector(rand.nextInt(250), rand.nextInt(250), 0), new PVector(rand.nextFloat(), rand.nextFloat(), 0));
-				rover.registerAsset("Path", path);
-				agents.add(rover);
+			for(int i = 0; i < 20; i++) {
+				Agent smartDrive = new SmartDrive(applet);
+				smartDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(rand.nextFloat(), rand.nextFloat(), 0));
+				smartDrive.registerAsset("Path", path);
+				agents.add(smartDrive);
 			}
+			
 			workspace.registerAgents(agents);
 			
 			assets.add(path);
-			
 			workspace.registerItem("Path", path);
 		}
 	}

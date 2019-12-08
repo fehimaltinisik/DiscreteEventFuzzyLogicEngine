@@ -1,6 +1,5 @@
 package main.java.tools.fuzzytoolkit;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -76,7 +75,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		Iterator<Entry<String, FuzzyVariable>> fuzzyVariableIterator = fuzzyVariables.entrySet().iterator();
 		
 		while(fuzzyVariableIterator.hasNext()) {
-			Map.Entry<String, FuzzyVariable> fuzzyVariable = (Map.Entry<String, FuzzyVariable>)fuzzyVariableIterator.next();
+			Map.Entry<String, FuzzyVariable> fuzzyVariable = fuzzyVariableIterator.next();
 			fuzzyVariable.getValue().clearActivations();
 		}
 	}
@@ -101,7 +100,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		Iterator<Entry<String, Float>> updatedCrispInputsIterator = updatedCrispInputs.entrySet().iterator();
 		
 		while(updatedCrispInputsIterator.hasNext()) {
-			Map.Entry<String, Float> crispInput = (Map.Entry<String, Float>)updatedCrispInputsIterator.next();
+			Map.Entry<String, Float> crispInput = updatedCrispInputsIterator.next();
 			updateCrispInput(crispInput);
 		}
 	}
@@ -110,7 +109,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		Iterator<Entry<String, FuzzyVariable>> fuzzyVariableIterator = fuzzyVariables.entrySet().iterator();
 		
 		while(fuzzyVariableIterator.hasNext()) {
-			Map.Entry<String, FuzzyVariable> fuzzyVariable = (Map.Entry<String, FuzzyVariable>)fuzzyVariableIterator.next();
+			Map.Entry<String, FuzzyVariable> fuzzyVariable = fuzzyVariableIterator.next();
 			printMembershipFunction(fuzzyVariable.getKey());
 		}
 	}
@@ -133,7 +132,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		Iterator<Entry<String, FuzzyVariable>> fuzzyVariableIterator = fuzzyVariables.entrySet().iterator();
 
 		while(fuzzyVariableIterator.hasNext()) {
-			Map.Entry<String, FuzzyVariable> fuzzyVariable = (Map.Entry<String, FuzzyVariable>)fuzzyVariableIterator.next();
+			Map.Entry<String, FuzzyVariable> fuzzyVariable = fuzzyVariableIterator.next();
 			
 			float [] n = new float[4];
 			
@@ -150,7 +149,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		Iterator<Entry<String, FuzzyVariable>> fuzzyVariableIterator = fuzzyVariables.entrySet().iterator();
 
 		while(fuzzyVariableIterator.hasNext()) {
-			Map.Entry<String, FuzzyVariable> fuzzyVariable = (Map.Entry<String, FuzzyVariable>)fuzzyVariableIterator.next();
+			Map.Entry<String, FuzzyVariable> fuzzyVariable = fuzzyVariableIterator.next();
 			
 			fuzzyVariable.getValue().draw();
 			List<float[]> functions = fuzzyVariable.getValue().getGUIDependencies();

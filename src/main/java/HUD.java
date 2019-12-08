@@ -1,7 +1,5 @@
 package main.java;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import peasy.PeasyCam;
-import peasy.PeasyDragHandler;
 import processing.core.PApplet;
 
 public class HUD {
@@ -108,8 +105,8 @@ public class HUD {
 			Iterator<Entry<String, float []>> discreteFunctionsInputsIterator = this.discreteFunctionsInputs.entrySet().iterator();
 			
 			while (discreteFunctionsIterator.hasNext() && discreteFunctionsInputsIterator.hasNext()) {
-		        Map.Entry<String, List<float []>> functionPair = (Map.Entry<String, List<float []>>)discreteFunctionsIterator.next();
-		        Map.Entry<String, float []> inputPair = (Map.Entry<String, float []>)discreteFunctionsInputsIterator.next();
+		        Map.Entry<String, List<float []>> functionPair = discreteFunctionsIterator.next();
+		        Map.Entry<String, float []> inputPair = discreteFunctionsInputsIterator.next();
 			        		        
 		        int nextYOffset = drawDiscreteFunction(functionPair.getKey(), functionPair.getValue(), counterX, counterY, inputPair.getValue());
 		        
