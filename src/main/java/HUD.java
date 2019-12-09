@@ -48,7 +48,9 @@ public class HUD {
 	public int drawDiscreteFunction(String key, List<float []> functions, int xGrid, int yGrid, float [] x) {
 	
 		float[] domain = functions.get(0);
+		
 		float domainRange = domain[domain.length - 1] - domain[0];
+		float textSize = xAxisLength / 15 * figureScale;
 		
 		int functionXOffset = widthOffset - (int)Math.ceil(xAxisLength * 1.50) * xGrid; // TODO : Test xGrid
 		int functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.50) * yGrid;
@@ -56,15 +58,16 @@ public class HUD {
 		applet.fill(0, 255, 0);
 		applet.stroke(0, 255, 0);
 		
-		applet.textSize(xAxisLength / 12);
+		applet.textSize(textSize);
 		
 		applet.line(functionXOffset, functionYOffset + yAxisLength, functionXOffset + xAxisLength, functionYOffset + yAxisLength);
-		applet.text(key, functionXOffset + xAxisLength, functionYOffset + yAxisLength + 15 * figureScale);
+		applet.text(key, functionXOffset + xAxisLength * 0.5f, functionYOffset + yAxisLength + 15 * figureScale);
 		
 		applet.line(functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset, functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset + yAxisLength);
 		applet.text("u", functionXOffset + xAxisLength / 2 + 5, functionYOffset);
 		
-		applet.textSize(xAxisLength / 18);
+		textSize = xAxisLength / 21 * figureScale;
+		applet.textSize(xAxisLength / textSize * figureScale);
 		
 		for (int i = 1; i < functions.size(); i++) {
 			float[] function = functions.get(i);
@@ -88,7 +91,7 @@ public class HUD {
 		
 		for (int i = 1; i < x.length; i++)
 			applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
-					functionYOffset + yAxisLength* 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
+					functionYOffset + yAxisLength * 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
 					inputRadius);	
 		
 		return functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.50) * yGrid + 1;

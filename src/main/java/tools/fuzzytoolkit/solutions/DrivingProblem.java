@@ -23,17 +23,26 @@ public class DrivingProblem extends FuzzyControlSystem{
 		
 		solution = new FuzzySolution();
 		
-		
 		FuzzyVariable lateralError = solution.newFuzzyVariable("lateralError", -5.9f, 3.75f, 10);
-		
 		lateralError.addMembershipFunction("trimf", -5.9f, -5.9f, 0);
 		lateralError.addMembershipFunction("trimf", 0, 3.75f, 3.75f);
 		lateralError.initFuzzyVariableDependencies();
-		
 		solution.registerFuzzyVariable("lateralError", lateralError);
 		
+		FuzzyVariable angularError = solution.newFuzzyVariable("angularError", -5.9f, 3.75f, 10);
+		angularError.addMembershipFunction("trimf", -5.9f, -5.9f, 0);
+		angularError.addMembershipFunction("trimf", 0, 3.75f, 3.75f);
+		angularError.initFuzzyVariableDependencies();
+		solution.registerFuzzyVariable("angularError", lateralError);
+		
+		FuzzyVariable steer = solution.newFuzzyVariable("steer", -5.9f, 3.75f, 10);
+		steer.addMembershipFunction("trimf", -5.9f, -5.9f, 0);
+		steer.addMembershipFunction("trimf", 0, 3.75f, 3.75f);
+		steer.initFuzzyVariableDependencies();
+		solution.registerFuzzyVariable("steer", lateralError);
+		
 		//solution.newFuzzyVariable("lateralError", -5.9f, 3.75f, 10, 3);
-		solution.newFuzzyVariable("angularError", (float)-Math.PI / 2, (float)Math.PI / 2, 10, 3);
+		//solution.newFuzzyVariable("angularError", (float)-Math.PI / 2, (float)Math.PI / 2, 10, 3);
 		solution.newFuzzyVariable("steer", 0, 90.5f, 25, 3);
 		
 		HashMap<String, Float> crispInputs = new HashMap<String, Float>(){/**
@@ -42,8 +51,8 @@ public class DrivingProblem extends FuzzyControlSystem{
 			private static final long serialVersionUID = 1L;
 		
 		{
-			put("lateralError", -3.2f);
-			put("angularError", 1.17f);
+			put("lateralError", 0.1f);
+			put("angularError", 0.1f);
 		}};
 		
 		solution.updateCrispInputs(crispInputs);
@@ -82,10 +91,10 @@ public class DrivingProblem extends FuzzyControlSystem{
 		
 		// solution.activate("QxS", "0x0", "tip", 0);
 		// solution.activate("QxS", "2x2", "tip", 2);
-		solution.activate("lateralError", 0, "steer", 0);
-		solution.activate("lateralError", 1, "steer", 1);
-		solution.activate("angularError", 0, "steer", 0);
-		solution.activate("angularError", 1, "steer", 1);
+		solution.activate("lateralError", 0, "steer", 1);
+		solution.activate("lateralError", 1, "steer", 0);
+		solution.activate("angularError", 0, "steer", 1);
+		solution.activate("angularError", 1, "steer", 0);
 		
 		solution.aggregate("steer");
 	}

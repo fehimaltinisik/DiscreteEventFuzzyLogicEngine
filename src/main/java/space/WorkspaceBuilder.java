@@ -92,16 +92,16 @@ public class WorkspaceBuilder {
 			path.setPoints(points);
 			path.setRadius(15);
 			
-//			for(int i = 0; i < 20; i++) {
-//				Agent smartDrive = new SmartDrive(applet);
-//				
-//				smartDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(rand.nextFloat(), 0, 0));
-//				smartDrive.registerAsset("Path", path);
-//				((SmartDrive) smartDrive).setScale(0.5f);
-//				((SmartDrive) smartDrive).setMaxForce(.10f);
-//				
-//				agents.add(smartDrive);
-//			}
+			for(int i = 0; i < 20; i++) {
+				Agent smartDrive = new SmartDrive(applet);
+				
+				smartDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(0, 0, 0));
+				smartDrive.registerAsset("Path", path);
+				((SmartDrive) smartDrive).setScale(0.5f);
+				((SmartDrive) smartDrive).setMaxForce(.10f);
+				
+				agents.add(smartDrive);
+			}
 //			
 //			Agent smartDrive = new SmartDrive(applet);
 //			
@@ -131,15 +131,17 @@ public class WorkspaceBuilder {
 //			
 			Agent fuzzyDrive = new FuzzyDrive(applet);
 			
-			fuzzyDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(rand.nextFloat(), rand.nextFloat(), 0));
+			fuzzyDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(0.44f, 0.37f, 0));
 			fuzzyDrive.registerAsset("Path", path);
 			((Car) fuzzyDrive).setColor(0, 255, 0);
+			((Car) fuzzyDrive).setScale(0.5f);
 			
 			DrivingProblem drivingProblem = new DrivingProblem(applet, true, false);
 			drivingProblem.setCamera(camera);
 			drivingProblem.solutionFactory();
 			
 			((FuzzyDrive) fuzzyDrive).setFuzzyControlSystem(drivingProblem);
+			((FuzzyDrive) fuzzyDrive).setMaxForce(1.0f);
 			agents.add(fuzzyDrive);
 			
 			workspace.registerAgents(agents);

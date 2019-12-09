@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
+
 import main.java.space.items.Path;
 import main.java.tools.fuzzytoolkit.FuzzyControlSystem;
 import main.java.tools.fuzzytoolkit.solutions.DrivingProblem;
@@ -31,9 +33,6 @@ public class FuzzyDrive extends Automobile {
 
 		Path path = (Path) assets.get("Path");
 
-		float threshold = 1000000;
-
-		PVector normal = null;
 		PVector predict = velocity.copy();
 
 		predict.normalize();
@@ -46,49 +45,56 @@ public class FuzzyDrive extends Automobile {
 		float distance = 0;
 		float theta = 0;
 		
+		PVector normalPoint = null;
+		PVector dir = null;
+		PVector a = null;
+		PVector b;
+		
 		for (int i = 0; i < points.size(); i++) {
-			PVector a = points.get(i);
-			PVector b = points.get((i + 1) % points.size());
+			a = points.get(i);
+			b = points.get((i + 1) % points.size());
 
-			PVector normalPoint = Path.getNormalPoint(predictedLocation, a, b);
-
-			PVector dir = PVector.sub(b, a);
+			normalPoint = Path.getNormalPoint(predictedLocation, a, b);
+			dir = PVector.sub(b, a);
 
 			if (normalPoint.x < PApplet.min(a.x, b.x) || normalPoint.x > PApplet.max(a.x, b.x)
 					|| normalPoint.y < PApplet.min(a.y, b.y) || normalPoint.y > PApplet.max(a.y, b.y)) {
 
-				// normalPoint = b.copy();
+				normalPoint = b.copy();
 
 				a = points.get((i + 1) % points.size());
 				b = points.get((i + 2) % points.size());
 
 				dir = PVector.sub(b, a);
-				
-				distance = PVector.dist(normalPoint, predictedLocation);
-				theta = PVector.angleBetween(a, predictedLocation);
 			}
+			
+			applet.circle(normalPoint.x, normalPoint.y, 5);
+
 		}
 
-//		if (threshold > path.getRadius()) {
-//			seek();
-//		}
-		
-		System.out.printf("Distance: %.2f, Theta: %.2f\n", distance, theta);
+		distance = PVector.dist(normalPoint, predictedLocation);
+		theta = PVector.angleBetween(dir, PVector.sub(a, predictedLocation));
 		
 		HashMap<String, Float> crispInputs = new HashMap<String, Float>();
 		
-		crispInputs.put("lateralError", -3.2f);
-		crispInputs.put("angularError", 1.17f);
+		crispInputs.put("lateralError", distance);
+		crispInputs.put("angularError", theta);
 		
 		drivingProblem.registerCrispInputs(crispInputs);
 		drivingProblem.systemUpdate();
 		drivingProblem.evaluateCrispInputs();
 		
 		float steering = ((DrivingProblem) drivingProblem).getCrispOutputs("steer");
-		PVector steer = PVector.fromAngle(steering);
+		PVector steer = PVector.fromAngle(PApplet.radians(steering));
+		
+		System.out.printf("Distance: %.2f, Theta: %.2f\n", distance, theta);
+		System.out.printf("Steer: %s, Streering: %.2f\n", steer.toString(), steering);
 		
 		applyForce(steer);
-
+		
+		System.out.printf("Acc: %s, Vel: %s Tar: %s\n", acceleration.toString(), velocity.toString(), "");
+		
+		applet.circle(predictedLocation.x, predictedLocation.y, 5);
 	}
 	
 	public void setFuzzyControlSystem(DrivingProblem drivingProblem) {

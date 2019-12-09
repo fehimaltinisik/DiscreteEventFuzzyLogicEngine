@@ -49,6 +49,7 @@ public abstract class Workspace implements Environment{
 	public abstract float [][] assetsFactory();
 	
 	public void drawGuideLines() {
+		applet.fill(255);
 		applet.stroke(255);
 		applet.line(-100, 0, 0, 100, 0, 0);
 		applet.text("X", 90, 0, 0);
