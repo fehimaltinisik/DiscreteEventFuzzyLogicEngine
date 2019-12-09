@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 
 import main.java.Drawable;
 
+// FIXME: Add Functionality of Non Symmetrical Functions
+
 public class FuzzySolution implements Drawable, SceneSetup{
 	private HashMap<String, List<float[]>> variableDefinitions = new HashMap<String, List<float[]>>();
 	private HashMap<String, float[]> fuzzifiedOutputs = new HashMap<String, float[]>();
@@ -16,16 +18,24 @@ public class FuzzySolution implements Drawable, SceneSetup{
 	private HashMap<String, ITRule> activationRules = new HashMap<String, ITRule>();
 	
 	public void newFuzzyVariable(String name, float lowerBoundary, float upperBoundary, int precision, int numberOfFunctions) {
-		FuzzyVariable fuzzyInputVariable = new FuzzyVariable();
+		FuzzyVariable fuzzyVariable = new FuzzyVariable();
 		
-		fuzzyInputVariable.generateMembershipFunctionsDomain(lowerBoundary, upperBoundary, precision);
-		fuzzyInputVariable.generateMembershipFunctions(numberOfFunctions, "trimf");
+		fuzzyVariable.generateMembershipFunctionsDomain(lowerBoundary, upperBoundary, precision);
+		fuzzyVariable.generateMembershipFunctions(numberOfFunctions, "trimf");
 		
-		registerFuzzyVariable(name, fuzzyInputVariable);
+		registerFuzzyVariable(name, fuzzyVariable);
 	}
 	
-	public void registerFuzzyVariable(String key, FuzzyVariable value) {
-		fuzzyVariables.put(key, value);		
+	public FuzzyVariable newFuzzyVariable(String name, float lowerBoundary, float upperBoundary, int precision) {
+		FuzzyVariable fuzzyVariable = new FuzzyVariable();
+		
+		fuzzyVariable.generateMembershipFunctionsDomain(lowerBoundary, upperBoundary, precision);
+		
+		return fuzzyVariable;
+	}
+	
+	public void registerFuzzyVariable(String key, FuzzyVariable variable) {
+		fuzzyVariables.put(key, variable);		
 	}
 
 	public void newActivationRule(String name, String nameLeft, String nameRight) {
@@ -134,11 +144,11 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		while(fuzzyVariableIterator.hasNext()) {
 			Map.Entry<String, FuzzyVariable> fuzzyVariable = fuzzyVariableIterator.next();
 			
-			float [] n = new float[4];
+			float [] n = new float[1 + fuzzyVariable.getValue().numberOfMembershipFunctions()];
 			
 			n[0] = fuzzyVariable.getValue().getCrisp();
 			
-			System.arraycopy(fuzzyVariable.getValue().getCrispOutputValues(), 0, n, 1, 3);
+			System.arraycopy(fuzzyVariable.getValue().getCrispOutputValues(), 0, n, 1, fuzzyVariable.getValue().numberOfMembershipFunctions());
 			
 			fuzzifiedOutputs.put(fuzzyVariable.getKey(), n);
 		}

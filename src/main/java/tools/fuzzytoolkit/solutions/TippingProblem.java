@@ -47,6 +47,7 @@ public class TippingProblem extends FuzzyControlSystem{
 
 		if (toggleDraw) {
 			hud = new HUD(applet, camera, 1280, 768);
+			hud.initOffset();
 			guiStateUpdate();
 		}
 	}
@@ -114,3 +115,25 @@ public class TippingProblem extends FuzzyControlSystem{
 	}
 
 }
+
+//tippingProblem = new TippingProblem(this, true, false);
+//tippingProblem.setCamera(camera);
+//
+//tippingProblem.solutionFactory();
+//tippingProblem.registerCrispInputs(new HashMap<String, Float>() {
+//	/**
+//	 * 
+//	 */
+//	private static final long serialVersionUID = 1L;
+//
+//	{
+//		put("quality", f1);
+//		put("service", f2);
+//	}
+//});
+//
+//tippingProblem.systemUpdate();
+//
+//tippingProblem.evaluateCrispInputs();
+//		
+//tippingProblem.draw();

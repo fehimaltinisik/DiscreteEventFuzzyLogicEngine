@@ -1,6 +1,7 @@
 package main.java.app.agents;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import main.java.space.items.Path;
 import processing.core.PApplet;
@@ -8,9 +9,8 @@ import processing.core.PVector;
 
 public class Automobile extends Car{
 	
-	private float maxVelocity = 2.0f;
-	private float maxForce = 0.05f;
-	
+	protected List<Agent> surroundings = new ArrayList<Agent>();
+
 	protected PVector target;
 	
 	protected Path path;
@@ -34,7 +34,6 @@ public class Automobile extends Car{
 		position.add(velocity);
 		acceleration.mult(0);
 		
-		acceleration.mult(0);
 		updateHeading();
 		
 		if (firstPersonCameraEnabled) {
@@ -43,8 +42,13 @@ public class Automobile extends Car{
 	}
 	
 	@Override
-	public void operate() {
+	public void calculate() {
 		pathFollow();
+	}
+	
+	public void updateRadar(List<Agent> vehicles) {
+		surroundings.clear();
+		surroundings.addAll(vehicles);
 	}
 	
 	public void seek() {
@@ -136,8 +140,31 @@ public class Automobile extends Car{
 	}
 	
 	
+	public float getMaxVelocity() {
+		return maxVelocity;
+	}
+
+	public void setMaxVelocity(float maxVelocity) {
+		this.maxVelocity = maxVelocity;
+	}
+
+	public float getMaxForce() {
+		return maxForce;
+	}
+
+	public void setMaxForce(float maxForce) {
+		this.maxForce = maxForce;
+	}
+
+	public PVector getTarget() {
+		return target;
+	}
 	
-	public void setPath(Path path) { this.path = path; }
+	public void setTarget(PVector target) {
+		this.target = target; 
+		}
 	
-	public void setTarget(PVector target) { this.target = target; }
+	public void setPath(Path path) { 
+		this.path = path; 
+	}
 }

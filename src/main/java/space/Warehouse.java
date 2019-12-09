@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import main.java.app.agents.Agent;
-import main.java.app.agents.Forklift;
 import main.java.space.items.Asset;
 import main.java.space.items.Item;
 import processing.core.PApplet;
@@ -12,8 +11,7 @@ import processing.core.PConstants;
 
 public class Warehouse extends Workspace{
 	
-	private List<Forklift> forklifts = new ArrayList<Forklift>();
-	private List<Item> products = new ArrayList<Item>();
+	private List<Item> items = new ArrayList<Item>();
 	
 	public Warehouse(PApplet applet) {
 		super(applet);
@@ -66,7 +64,7 @@ public class Warehouse extends Workspace{
 
 		applet.popMatrix();
 		
-		for(Item item: products) {
+		for(Item item: items) {
 			item.draw();
 		}
 	}

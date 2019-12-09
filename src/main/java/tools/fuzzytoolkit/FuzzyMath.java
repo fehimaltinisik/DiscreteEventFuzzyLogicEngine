@@ -59,7 +59,7 @@ public class FuzzyMath{
 			domain[i] = start + step * i;
 		}
 		
-		// System.out.println(Arrays.toString(domain));
+		System.out.println(Arrays.toString(domain));
 				
 		return domain;
 	}

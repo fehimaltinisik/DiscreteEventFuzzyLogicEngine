@@ -1,16 +1,13 @@
 package main.java.space;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import main.java.app.agents.Agent;
+import main.java.app.agents.Automobile;
 import main.java.app.agents.SmartDrive;
 import main.java.space.items.Asset;
-import processing.core.PApplet;
 import processing.core.PConstants;
 
 public class Street extends Workspace{
@@ -18,7 +15,7 @@ public class Street extends Workspace{
 	@Override
 	public void radar() {		
 		for(Agent agent : agents) {
-			((SmartDrive)agent).updateRadar(agents);
+			((Automobile)agent).updateRadar(agents);
 		}
 	}
 

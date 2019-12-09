@@ -17,14 +17,13 @@ public class Membership {
 		
 		if (a != b) {
 			for (int i = 0; i < x.length; i++) {
-				temp[i] = (a < x[i] & x[i] < b) ? 1 : 0;
+				temp[i] = (a < x[i] && x[i] < b) ? 1 : 0;
 			}
 			
 			for (int i = 0; i < temp.length; i++) {
 				if (temp[i] != 0) {
 					y[i] = (x[i] - a) / (b - a);
-				}else
-					continue;
+				}
 			}
 			
 		}
@@ -33,14 +32,13 @@ public class Membership {
 	    
 		if (b != c) {
 			for (int i = 0; i < x.length; i++) {
-				temp[i] = (b < x[i] & x[i] < c) ? 1 : 0;
+				temp[i] = (b < x[i] && x[i] < c) ? 1 : 0;
 			}
 			
 			for (int i = 0; i < temp.length; i++) {
 				if (temp[i] != 0) {
 					y[i] = (c - x[i] ) / (c - b);
-				}else
-					continue;
+				}
 			}
 		}
 		
@@ -51,10 +49,13 @@ public class Membership {
 		}
 		
 		System.out.println(Arrays.toString(y));
+		// System.out.printf("%.2f, %.2f, %.2f, ", a, b, c);
 		
 	    return y;
 
 	}
+	
+	// FIXME: np.nonzero
 	
 	public static float [] trapmf(float [] x, float a, float b, float c, float d) {
 		

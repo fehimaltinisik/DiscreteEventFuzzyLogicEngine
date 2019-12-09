@@ -22,8 +22,35 @@ public class FuzzyVariable implements Drawable{
 	public FuzzyVariable() {}
 
 	public void generateMembershipFunctionsDomain(float lowerBoundary, float upperBoundary, int precision) {
+		this.lowerBound = lowerBoundary;
+		this.upperBound = upperBoundary;
+		
 		range = upperBoundary - lowerBoundary;
 		domain = FuzzyMath.linspace(lowerBoundary, upperBoundary, precision);
+	}
+	
+	public void addMembershipFunction(String functionsType, float ... args) {
+		if (functionsType == "trimf") {
+			if (args.length == 3) {
+				membershipFunctions.add(Membership.trimf(domain, args[0], args[1], args[2]));
+			}else {
+				throw new IllegalArgumentException("Membership function 'trimf' requires exactly 3 arguments");
+			}	
+		}else if(functionsType == "trapmf") {
+			if (args.length == 4) {
+				membershipFunctions.add(Membership.trapmf(domain, args[0], args[1], args[2], args[3]));
+			}else {
+				throw new IllegalArgumentException("Membership function 'trapmf' requires exactly 4 arguments");
+			}
+		}else if(functionsType == "gaussianmf") {
+			if (args.length == 2) {
+				membershipFunctions.add(Membership.gaussianmf(domain, args[0], args[1]));
+			}else {
+				throw new IllegalArgumentException("Membership function 'gaussianmf' requires exactly 2 arguments");
+			}
+		}else {
+			throw new IllegalArgumentException(String.format("Unrecognized Membership Function: %s. Provide either 'trimf', 'trapmf' or 'gaussianmf'", functionsType));
+		}
 	}
 	
 	public void generateMembershipFunctions(int numberOfFunctions, String functionsType) {
@@ -33,12 +60,12 @@ public class FuzzyVariable implements Drawable{
 		int i = 0;
 		float step = range / (numberOfFunctions - 1);
 		
-		membershipFunctions.add(Membership.trimf(domain, 0, 0, step));		
-		for (i = 0; i < numberOfFunctions - 2; i++) {
-			membershipFunctions.add(Membership.trimf(domain, i * step, i * step + step, i * step + 2 * step));
+		membershipFunctions.add(Membership.trimf(domain, lowerBound, lowerBound, lowerBound + step));		
+		for (; i < numberOfFunctions - 2; i++) {
+			membershipFunctions.add(Membership.trimf(domain, lowerBound + i * step, lowerBound +  i * step + step, lowerBound +  i * step + 2 * step));
 			
 		}
-		membershipFunctions.add(Membership.trimf(domain, i * step, i * step + step, i * step + step));
+		membershipFunctions.add(Membership.trimf(domain,lowerBound +  i * step, lowerBound + i * step + step, lowerBound +  i * step + step));
 		
 		initFuzzyVariableDependencies();
 	}
@@ -111,5 +138,9 @@ public class FuzzyVariable implements Drawable{
 		guiDependencies.clear();
 		guiDependencies.addAll(membershipFunctions);
 		guiDependencies.add(0, domain);
+	}
+
+	public int numberOfMembershipFunctions() {
+		return membershipFunctions.size();
 	}
 }

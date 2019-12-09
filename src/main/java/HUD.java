@@ -34,7 +34,9 @@ public class HUD {
 		this.camera = camera;
 		this.windowWidth = windowWidth;
 		this.windowHeigth = windowHeigth;
-		
+	}
+	
+	public void initOffset() {
 		widthOffset = windowWidth - xAxisLength - (int)(xAxisLength * 0.33);
 		heigthOffset = (int)(yAxisLength * 0.33);
 	}
@@ -45,6 +47,9 @@ public class HUD {
 	
 	public int drawDiscreteFunction(String key, List<float []> functions, int xGrid, int yGrid, float [] x) {
 	
+		float[] domain = functions.get(0);
+		float domainRange = domain[domain.length - 1] - domain[0];
+		
 		int functionXOffset = widthOffset - (int)Math.ceil(xAxisLength * 1.50) * xGrid; // TODO : Test xGrid
 		int functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.50) * yGrid;
 		
@@ -56,11 +61,8 @@ public class HUD {
 		applet.line(functionXOffset, functionYOffset + yAxisLength, functionXOffset + xAxisLength, functionYOffset + yAxisLength);
 		applet.text(key, functionXOffset + xAxisLength, functionYOffset + yAxisLength + 15 * figureScale);
 		
-		applet.line(functionXOffset + xAxisLength / 2, functionYOffset, functionXOffset + xAxisLength / 2, functionYOffset + yAxisLength);
+		applet.line(functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset, functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset + yAxisLength);
 		applet.text("u", functionXOffset + xAxisLength / 2 + 5, functionYOffset);
-				
-		float[] domain = functions.get(0);
-		float domain_range = domain[domain.length - 1] - domain[0];
 		
 		applet.textSize(xAxisLength / 18);
 		
@@ -68,9 +70,9 @@ public class HUD {
 			float[] function = functions.get(i);
 						
 			for (int j = 1; j < function.length; j++) {
-				applet.line(functionXOffset + xAxisLength * 0.05f + (domain[j - 1] / domain_range) * xAxisLength * 0.9f, 
+				applet.line(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[j - 1]) / domainRange) * xAxisLength * 0.9f, 
 							functionYOffset + yAxisLength * 0.2f + (1 - function[j - 1]) * yAxisLength * 0.8f, 
-							functionXOffset + xAxisLength * 0.05f + (domain[j] / domain_range) * xAxisLength * 0.9f, 
+							functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[j]) / domainRange) * xAxisLength * 0.9f, 
 							functionYOffset + yAxisLength * 0.2f + (1 - function[j]) * yAxisLength * 0.8f);
 							
 				// applet.text(Integer.toString((int)domain[j - 1]), functionXOffset + xAxisLength * 0.05f + (domain[j - 1] / domain_range) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 8 * figureScale);
@@ -81,11 +83,11 @@ public class HUD {
 		applet.fill(255, 0, 0);
 		applet.stroke(255, 0, 0);
 		
-		applet.circle(functionXOffset + xAxisLength * 0.05f + (x[0] / domain_range) * xAxisLength * 0.9f, 
+		applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
 				functionYOffset + yAxisLength, inputRadius);
 		
 		for (int i = 1; i < x.length; i++)
-			applet.circle(functionXOffset + xAxisLength * 0.05f + (x[0] / domain_range) * xAxisLength * 0.9f, 
+			applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
 					functionYOffset + yAxisLength* 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
 					inputRadius);	
 		

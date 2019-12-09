@@ -1,11 +1,9 @@
 package main.java;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import main.java.app.agents.Automobile;
-import main.java.app.agents.Forklift;
+import main.java.app.agents.TestDrive;
 import main.java.space.Workspace;
 import main.java.space.WorkspaceBuilder;
 import main.java.space.WorkspaceFactory;
@@ -26,7 +24,7 @@ public class Run extends PApplet {
 	HUD hud;
 	
 	Automobile automobile;
-	Forklift forklift;
+	TestDrive forklift;
 	
 	Workspace street;
 	
@@ -47,10 +45,12 @@ public class Run extends PApplet {
 
 	@Override
 	public void setup() {
-		
+		camera = new PeasyCam(this, 250);
+		camera.setMaximumDistance(maximumCameraDistance);
+				
 		WorkspaceFactory workspaceFactory = new WorkspaceFactory();
 		
-		WorkspaceBuilder workspaceBuilder = new WorkspaceBuilder(this);
+		WorkspaceBuilder workspaceBuilder = new WorkspaceBuilder(this, camera);
 		workspaceBuilder.setWorkspaceFactory(workspaceFactory);
 		
 		workspaceBuilder.setWorkspace("street");
@@ -59,47 +59,39 @@ public class Run extends PApplet {
 		street = workspaceBuilder.getWorkspace();
 		terrain = street.terrainFactory();
 
-		automobile = new Automobile(this, new PVector(10.0f, 10, terrain[15][15]), new PVector(1, 0, 0));
-		// rover.toggleManualDriving();
-		// rover.toggleFirstPersonCamera();
-		automobile.setPath(path);
-
-		forklift = new Forklift(this, new PVector(-0.0f, 0, terrain[18][18]), new PVector(0, 0, 0));
+		forklift = new TestDrive(this, new PVector(-0.0f, 0, terrain[18][18]), new PVector(0, 0, 0));
 		forklift.toggleManualDriving();
-		// rover.toggleFirstPersonCamera();
-
-		camera = new PeasyCam(this, 250);
-		camera.setMaximumDistance(maximumCameraDistance);
-		
-		hud = new HUD(this, camera, window_width, window_heigth);
-		
-		ArrayList<PVector> points = new ArrayList<>(Arrays.asList( 
-				new PVector(-250, 0),
-				new PVector(-160, -160),
-				new PVector(0, -250),
-				new PVector(160, -160),
-				new PVector(250, 0),
-				new PVector(160, 160),
-				new PVector(0, 250),
-				new PVector(-160, 160),
-				new PVector(-250, 0)
-				));
-		
-		path.setPoints(points);
+		// forklift.toggleFirstPersonCamera();
 		
 		frameRate(30);
 		fill(120, 50, 240);
 		noStroke();
 		
-		tippingProblem = new TippingProblem(this, true, false);
+		System.out.println("\n\n\n\n\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n");
+
+		tippingProblem = new TippingProblem(this, false, false);
 		tippingProblem.setCamera(camera);
 		
 		tippingProblem.solutionFactory();
+		tippingProblem.registerCrispInputs(new HashMap<String, Float>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("quality", 6.5f);
+				put("service", 9.8f);
+			}
+		});
+		
+		tippingProblem.systemUpdate();
+		
+		tippingProblem.evaluateCrispInputs();
 				
+		tippingProblem.debug();
+			
 	}
-	
-	float f1 = 6.5f;
-	float f2 = 9.8f;
 
 	@Override
 	public void draw() {
@@ -110,23 +102,9 @@ public class Run extends PApplet {
 		
 		street.simulate();
 								
-		forklift.operate();
-		forklift.update();
-		forklift.draw();
-		
-		tippingProblem.registerCrispInputs(new HashMap<String, Float>() {
-			{
-				put("quality", f1);
-				put("service", f2);
-			}
-		});
-		
-		tippingProblem.systemUpdate();
-		
-		tippingProblem.evaluateCrispInputs();
-				
-		tippingProblem.draw();
-				
+//		forklift.operate();
+//		forklift.update();
+//		forklift.draw();
 	}
 }
 
