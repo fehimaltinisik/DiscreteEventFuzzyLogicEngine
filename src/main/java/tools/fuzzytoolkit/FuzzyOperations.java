@@ -4,8 +4,12 @@ public class FuzzyOperations {
 	public static float interpolateMembership(float[] x, float[] xmf, float crisp, boolean zeroOutsideX) {	
 		
 	if (zeroOutsideX) {
-		if(crisp < x[0] || crisp >= x[x.length - 1] )
-			return 1;
+		if(crisp < x[0]) {
+			return interpolateMembership(x, xmf, x[0], zeroOutsideX);
+		}else if(crisp > x[x.length - 1]) {
+			return interpolateMembership(x, xmf, x[x.length - 1], zeroOutsideX);
+		}
+			
 	}else {
 		throw new IllegalArgumentException(String.format("Crisp value : %f is out bounds : [%.2f, %.2f]", 
 				crisp, x[0], x[x.length]));
@@ -17,7 +21,7 @@ public class FuzzyOperations {
 	int idx = 0;
 	float distance = Float.MAX_VALUE;
 	
-	for(int i = 0; i < x.length; i++) {
+	for(int i = 0; i < x.length - 1; i++) {
 		float indexdistance = Math.abs(x[i] - integer);
 		if (indexdistance < distance) {
 			distance = indexdistance;

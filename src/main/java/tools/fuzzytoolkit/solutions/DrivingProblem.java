@@ -27,23 +27,26 @@ public class DrivingProblem extends FuzzyControlSystem{
 		lateralError.addMembershipFunction("trimf", -5.9f, -5.9f, 0);
 		lateralError.addMembershipFunction("trimf", 0, 3.75f, 3.75f);
 		lateralError.initFuzzyVariableDependencies();
+		lateralError.setName("lateralError");
 		solution.registerFuzzyVariable("lateralError", lateralError);
 		
-		FuzzyVariable angularError = solution.newFuzzyVariable("angularError", -5.9f, 3.75f, 10);
-		angularError.addMembershipFunction("trimf", -5.9f, -5.9f, 0);
-		angularError.addMembershipFunction("trimf", 0, 3.75f, 3.75f);
+		FuzzyVariable angularError = solution.newFuzzyVariable("angularError", (float)-Math.PI, (float)Math.PI, 10);
+		angularError.addMembershipFunction("trimf", (float)-Math.PI, (float)-Math.PI, 0);
+		angularError.addMembershipFunction("trimf", 0, (float)Math.PI, (float)Math.PI);
 		angularError.initFuzzyVariableDependencies();
-		solution.registerFuzzyVariable("angularError", lateralError);
+		angularError.setName("angularError");
+		solution.registerFuzzyVariable("angularError", angularError);
 		
-		FuzzyVariable steer = solution.newFuzzyVariable("steer", -5.9f, 3.75f, 10);
-		steer.addMembershipFunction("trimf", -5.9f, -5.9f, 0);
-		steer.addMembershipFunction("trimf", 0, 3.75f, 3.75f);
+		FuzzyVariable steer = solution.newFuzzyVariable("steer", (float)-Math.PI / 2, (float)Math.PI / 2, 10);
+		steer.addMembershipFunction("trimf", (float)-Math.PI / 2, (float)-Math.PI / 2, 0);
+		steer.addMembershipFunction("trimf", 0, (float)Math.PI / 2, (float)Math.PI / 2);
 		steer.initFuzzyVariableDependencies();
-		solution.registerFuzzyVariable("steer", lateralError);
+		steer.setName("steer");
+		solution.registerFuzzyVariable("steer", steer);
 		
 		//solution.newFuzzyVariable("lateralError", -5.9f, 3.75f, 10, 3);
 		//solution.newFuzzyVariable("angularError", (float)-Math.PI / 2, (float)Math.PI / 2, 10, 3);
-		solution.newFuzzyVariable("steer", 0, 90.5f, 25, 3);
+		//solution.newFuzzyVariable("steer", 0, 90.5f, 25, 3);
 		
 		HashMap<String, Float> crispInputs = new HashMap<String, Float>(){/**
 			 * 
@@ -51,7 +54,7 @@ public class DrivingProblem extends FuzzyControlSystem{
 			private static final long serialVersionUID = 1L;
 		
 		{
-			put("lateralError", 0.1f);
+			put("lateralError", 3.74f);
 			put("angularError", 0.1f);
 		}};
 		
@@ -76,7 +79,7 @@ public class DrivingProblem extends FuzzyControlSystem{
 	}
 
 	@Override
-	public void evaluateCrispInputs() {
+	public void evaluateCrispOutputs() {
 		solution.defuzz("steer", "steerDefuzz", "centroid");
 		crispOutputs.put("steer", solution.getDefuzzified("steerDefuzz"));
 	}
@@ -101,7 +104,13 @@ public class DrivingProblem extends FuzzyControlSystem{
 
 	@Override
 	public void debug() {
-		System.out.printf("%.2f", solution.getDefuzzified("steer"));
+		System.out.println("<ControlSystemDebug>\n");
+		
+		solution.debug();
+		
+		// System.out.printf("%.2f", crispOutputs.get("steer"));
+		
+		System.out.println("</ControlSystemDebug>\n");
 	}
 
 	@Override
@@ -124,8 +133,8 @@ public class DrivingProblem extends FuzzyControlSystem{
 		solution.setUpScene();
 		HashMap<String, List<float[]>> functions = solution.getSceneElements();
 		
-		hud.registerDiscreteFunction("lateralError", functions.get("lateralError"));
-		hud.registerDiscreteFunction("angularError", functions.get("angularError"));
+		hud.registerFuzzyVariable("lateralError", functions.get("lateralError"));
+		hud.registerFuzzyVariable("angularError", functions.get("angularError"));
 
 	}
 	

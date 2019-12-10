@@ -41,7 +41,7 @@ public class HUD {
 		heigthOffset = (int)(yAxisLength * 0.33);
 	}
 	
-	public void registerDiscreteFunction(String name, List<float []> functions) {
+	public void registerFuzzyVariable(String name, List<float []> functions) {
 		discreteFunctions.put(name, functions);
 	}
 	
@@ -86,14 +86,35 @@ public class HUD {
 		applet.fill(255, 0, 0);
 		applet.stroke(255, 0, 0);
 		
-		applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
-				functionYOffset + yAxisLength, inputRadius);
-		
-		for (int i = 1; i < x.length; i++)
+		if (x[0] > domain[domain.length - 1]) {
+			applet.circle(functionXOffset + xAxisLength * 0.95f, 
+					functionYOffset + yAxisLength, inputRadius);
+		}else if(x[0] < domain[0]){
+			applet.circle(functionXOffset + xAxisLength * 0.05f, 
+					functionYOffset + yAxisLength, inputRadius);
+		}else {
 			applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
-					functionYOffset + yAxisLength * 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
-					inputRadius);	
+					functionYOffset + yAxisLength, inputRadius);
+		}
 		
+//		applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
+//				functionYOffset + yAxisLength, inputRadius);
+
+		for (int i = 1; i < x.length; i++) {
+			if (x[i] > domain[domain.length - 1]) {
+				applet.circle(functionXOffset + xAxisLength * 0.95f, 
+						functionYOffset + yAxisLength * 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
+						inputRadius);	
+			}else if(x[i] < domain[0]){
+				applet.circle(functionXOffset + xAxisLength * 0.05f, 
+						functionYOffset + yAxisLength * 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
+						inputRadius);	
+			}else {
+				applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
+						functionYOffset + yAxisLength * 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
+						inputRadius);	
+			}
+		}
 		return functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.50) * yGrid + 1;
 	}
 	

@@ -29,7 +29,7 @@ public abstract class FuzzyControlSystem implements Drawable{
 	
 	public abstract void registerCrispInputs(HashMap<String, Float> crispInputs);
 	
-	public abstract void evaluateCrispInputs();
+	public abstract void evaluateCrispOutputs();
 	
 	public abstract void debug();
 	

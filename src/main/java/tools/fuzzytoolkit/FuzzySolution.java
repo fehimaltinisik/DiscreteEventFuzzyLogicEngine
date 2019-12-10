@@ -15,7 +15,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 	private HashMap<String, float[]> fuzzifiedOutputs = new HashMap<String, float[]>();
 	private HashMap<String, FuzzyVariable> fuzzyVariables = new HashMap<String, FuzzyVariable>();
 	private HashMap<String, Float> defuzzifiedOutputs = new HashMap<String, Float>();
-	private HashMap<String, ITRule> activationRules = new HashMap<String, ITRule>();
+	private HashMap<String, IfThenRule> activationRules = new HashMap<String, IfThenRule>();
 	
 	public void newFuzzyVariable(String name, float lowerBoundary, float upperBoundary, int precision, int numberOfFunctions) {
 		FuzzyVariable fuzzyVariable = new FuzzyVariable();
@@ -43,17 +43,17 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		FuzzyVariable left = fuzzyVariables.get(nameLeft);
 		FuzzyVariable right = fuzzyVariables.get(nameRight);
 		
-		ITRule rule = new ITRule(left, right);
+		IfThenRule rule = new IfThenRule(left, right);
 		
 		registerActivationRule(name, rule);
 	}
 	
-	public void registerActivationRule(String key, ITRule value) {
+	public void registerActivationRule(String key, IfThenRule value) {
 		activationRules.put(key, value);
 	}
 
 	public void evalActivationOutput(String ruleName, String outputName, String operation, int leftPosition, int rightPosition) {
-		ITRule rule = activationRules.get(ruleName);
+		IfThenRule rule = activationRules.get(ruleName);
 		
 		if (operation == "or") {
 			rule.or(outputName, leftPosition, rightPosition);
@@ -63,7 +63,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 	}
 	
 	public void activate(String ruleName, String ruleOutputName, String variableName, int membershipFunctionNumber) {
-		ITRule rule = activationRules.get(ruleName);
+		IfThenRule rule = activationRules.get(ruleName);
 		float ruleOutput = rule.getRuleOutput(ruleOutputName);
 		
 		FuzzyVariable outputVariable = fuzzyVariables.get(variableName);
@@ -75,9 +75,9 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		FuzzyVariable inputVariable = fuzzyVariables.get(inputVariableName);
 		FuzzyVariable outputVariable = fuzzyVariables.get(outputVariableName);
 		
-		float crispOutput = inputVariable.getCrispOutputValues()[inputVariableMembershipFunction];
+		float fuzzifiedInput = inputVariable.getFuzzifiedInputs()[inputVariableMembershipFunction];
 		
-		outputVariable.activation(crispOutput, outputVariableMembershipFunctionNumber);
+		outputVariable.activation(fuzzifiedInput, outputVariableMembershipFunctionNumber);
 	}
 	
 
@@ -85,8 +85,8 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		Iterator<Entry<String, FuzzyVariable>> fuzzyVariableIterator = fuzzyVariables.entrySet().iterator();
 		
 		while(fuzzyVariableIterator.hasNext()) {
-			Map.Entry<String, FuzzyVariable> fuzzyVariable = fuzzyVariableIterator.next();
-			fuzzyVariable.getValue().clearActivations();
+			Map.Entry<String, FuzzyVariable> fuzzyVariableEntry = fuzzyVariableIterator.next();
+			fuzzyVariableEntry.getValue().clearActivations();
 		}
 	}
 	
@@ -95,10 +95,10 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		outputVariable.aggregate();
 	}
 	
-	public void defuzz(String nameName, String defuzzName, String method) {
+	public void defuzz(String nameName, String defuzzifiedOutputValueName, String method) {
 		FuzzyVariable outputVariable = fuzzyVariables.get(nameName);
-		float crispOutput = outputVariable.defuzz(method);
-		defuzzifiedOutputs.put(defuzzName, crispOutput);
+		float defuzzifiedOutputVariable = outputVariable.defuzz(method);
+		defuzzifiedOutputs.put(defuzzifiedOutputValueName, defuzzifiedOutputVariable);
 	}
 	
 	public void updateCrispInput(Map.Entry<String, Float> crispInput) {
@@ -119,14 +119,14 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		Iterator<Entry<String, FuzzyVariable>> fuzzyVariableIterator = fuzzyVariables.entrySet().iterator();
 		
 		while(fuzzyVariableIterator.hasNext()) {
-			Map.Entry<String, FuzzyVariable> fuzzyVariable = fuzzyVariableIterator.next();
-			printMembershipFunction(fuzzyVariable.getKey());
+			Map.Entry<String, FuzzyVariable> fuzzyVariableEntry = fuzzyVariableIterator.next();
+			printMembershipFunction(fuzzyVariableEntry.getKey());
 		}
 	}
 	
 	public void printMembershipFunction(String key) {
 		FuzzyVariable fuzzyVariable = fuzzyVariables.get(key);
-		fuzzyVariable.print();
+		fuzzyVariable.printMembershipFunctions();
 	}
 	
 	public float getDefuzzified(String name) {
@@ -142,15 +142,15 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		Iterator<Entry<String, FuzzyVariable>> fuzzyVariableIterator = fuzzyVariables.entrySet().iterator();
 
 		while(fuzzyVariableIterator.hasNext()) {
-			Map.Entry<String, FuzzyVariable> fuzzyVariable = fuzzyVariableIterator.next();
+			Map.Entry<String, FuzzyVariable> fuzzyVariableEntry = fuzzyVariableIterator.next();
 			
-			float [] n = new float[1 + fuzzyVariable.getValue().numberOfMembershipFunctions()];
+			float [] n = new float[1 + fuzzyVariableEntry.getValue().numberOfMembershipFunctions()];
 			
-			n[0] = fuzzyVariable.getValue().getCrisp();
+			n[0] = fuzzyVariableEntry.getValue().getCrisp();
 			
-			System.arraycopy(fuzzyVariable.getValue().getCrispOutputValues(), 0, n, 1, fuzzyVariable.getValue().numberOfMembershipFunctions());
+			System.arraycopy(fuzzyVariableEntry.getValue().getFuzzifiedInputs(), 0, n, 1, fuzzyVariableEntry.getValue().numberOfMembershipFunctions());
 			
-			fuzzifiedOutputs.put(fuzzyVariable.getKey(), n);
+			fuzzifiedOutputs.put(fuzzyVariableEntry.getKey(), n);
 		}
 	}
 
@@ -159,12 +159,12 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		Iterator<Entry<String, FuzzyVariable>> fuzzyVariableIterator = fuzzyVariables.entrySet().iterator();
 
 		while(fuzzyVariableIterator.hasNext()) {
-			Map.Entry<String, FuzzyVariable> fuzzyVariable = fuzzyVariableIterator.next();
+			Map.Entry<String, FuzzyVariable> fuzzyVariableEntry = fuzzyVariableIterator.next();
 			
-			fuzzyVariable.getValue().draw();
-			List<float[]> functions = fuzzyVariable.getValue().getGUIDependencies();
+			fuzzyVariableEntry.getValue().draw();
+			List<float[]> functions = fuzzyVariableEntry.getValue().getGUIDependencies();
 			
-			variableDefinitions.put(fuzzyVariable.getKey(), functions);
+			variableDefinitions.put(fuzzyVariableEntry.getKey(), functions);
 		}
 
 	}
@@ -172,6 +172,35 @@ public class FuzzySolution implements Drawable, SceneSetup{
 	@Override
 	public HashMap<String, List<float []>> getSceneElements() {
 		return variableDefinitions;
+	}
+	
+	public void debug() {
+		System.out.println("\t<FuzzySolution>\n");
+				
+		Iterator<Entry<String, FuzzyVariable>> fuzzyVariableIterator = fuzzyVariables.entrySet().iterator();
+		Iterator<Entry<String, IfThenRule>> ifThenRuleIterator = activationRules.entrySet().iterator();
+		Iterator<Entry<String, Float>> defuzzifiedOutputIterator = defuzzifiedOutputs.entrySet().iterator();
+
+		while(fuzzyVariableIterator.hasNext()) {
+			Map.Entry<String, FuzzyVariable> fuzzyVariableEntry = fuzzyVariableIterator.next();
+			FuzzyVariable fuzzyVariable = fuzzyVariableEntry.getValue();
+			fuzzyVariable.debug();
+		}
+
+		while(ifThenRuleIterator.hasNext()) {
+			Map.Entry<String, IfThenRule> ifThenRuleEntry = ifThenRuleIterator.next();
+			IfThenRule ifThenRule = ifThenRuleEntry.getValue();
+			ifThenRule.debug();
+		}
+		
+		System.out.println("\t\t<DefuzzifiedOutputs>");
+		while(defuzzifiedOutputIterator.hasNext()) {
+			Map.Entry<String, Float> defuzzifiedOutputEntry = defuzzifiedOutputIterator.next();
+			System.out.printf(String.format("\t\tName: %s, Value: %.2f", defuzzifiedOutputEntry.getKey(), defuzzifiedOutputEntry.getValue()));
+		}
+		System.out.println("\n\t\t</DefuzzifiedOutputs>");
+		
+		System.out.println("\t</FuzzySolution>\n");
 	}
 	
 }

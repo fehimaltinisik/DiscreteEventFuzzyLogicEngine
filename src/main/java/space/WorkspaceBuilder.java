@@ -141,12 +141,12 @@ public class WorkspaceBuilder {
 			drivingProblem.solutionFactory();
 			
 			((FuzzyDrive) fuzzyDrive).setFuzzyControlSystem(drivingProblem);
-			((FuzzyDrive) fuzzyDrive).setMaxForce(1.0f);
+			((FuzzyDrive) fuzzyDrive).setMaxForce(.3f);
+			
 			agents.add(fuzzyDrive);
+			assets.add(path);
 			
 			workspace.registerAgents(agents);
-			
-			assets.add(path);
 			workspace.registerItem("Path", path);
 		}
 	}

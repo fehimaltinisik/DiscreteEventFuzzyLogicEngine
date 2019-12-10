@@ -34,6 +34,9 @@ public class Run extends PApplet {
 	
 	TippingProblem tippingProblem;
 	
+	public boolean debug = true;
+	public int counter = 10;
+	
 	public static void main(String[] args) {
 		PApplet.main("main.java.Run");
 	}
@@ -87,7 +90,7 @@ public class Run extends PApplet {
 		
 		tippingProblem.systemUpdate();
 		
-		tippingProblem.evaluateCrispInputs();
+		tippingProblem.evaluateCrispOutputs();
 				
 		tippingProblem.debug();
 			
@@ -95,6 +98,12 @@ public class Run extends PApplet {
 
 	@Override
 	public void draw() {
+		
+		if (debug) {
+			if(counter-- == 0)
+				System.exit(0);
+		}
+		
 		background(0);
 
 		street.draw();

@@ -57,7 +57,7 @@ public class TippingProblemBackUp extends FuzzyControlSystem{
 	}
 
 	@Override
-	public void evaluateCrispInputs() {
+	public void evaluateCrispOutputs() {
 		solution.defuzz("tip", "tipdefuzz", "centroid");
 		crispOutputs.put("tip", solution.getDefuzzified("tipdefuzz"));
 	}
@@ -102,8 +102,8 @@ public class TippingProblemBackUp extends FuzzyControlSystem{
 		solution.setUpScene();
 		HashMap<String, List<float[]>> functions = solution.getSceneElements();
 		
-		hud.registerDiscreteFunction("quality", functions.get("quality"));
-		hud.registerDiscreteFunction("service", functions.get("service"));
+		hud.registerFuzzyVariable("quality", functions.get("quality"));
+		hud.registerFuzzyVariable("service", functions.get("service"));
 
 	}
 
