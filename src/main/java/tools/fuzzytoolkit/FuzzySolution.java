@@ -95,8 +95,8 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		outputVariable.aggregate();
 	}
 	
-	public void defuzz(String nameName, String defuzzifiedOutputValueName, String method) {
-		FuzzyVariable outputVariable = fuzzyVariables.get(nameName);
+	public void defuzz(String name, String defuzzifiedOutputValueName, String method) {
+		FuzzyVariable outputVariable = fuzzyVariables.get(name);
 		float defuzzifiedOutputVariable = outputVariable.defuzz(method);
 		defuzzifiedOutputs.put(defuzzifiedOutputValueName, defuzzifiedOutputVariable);
 	}
@@ -196,7 +196,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		System.out.println("\t\t<DefuzzifiedOutputs>");
 		while(defuzzifiedOutputIterator.hasNext()) {
 			Map.Entry<String, Float> defuzzifiedOutputEntry = defuzzifiedOutputIterator.next();
-			System.out.printf(String.format("\t\tName: %s, Value: %.2f", defuzzifiedOutputEntry.getKey(), defuzzifiedOutputEntry.getValue()));
+			System.out.printf(String.format("\t\t\tName: %s, Value: %.2f", defuzzifiedOutputEntry.getKey(), defuzzifiedOutputEntry.getValue()));
 		}
 		System.out.println("\n\t\t</DefuzzifiedOutputs>");
 		

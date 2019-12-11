@@ -11,7 +11,7 @@ public class FuzzyOperations {
 		}
 			
 	}else {
-		throw new IllegalArgumentException(String.format("Crisp value : %f is out bounds : [%.2f, %.2f]", 
+		throw new IllegalArgumentException(String.format("Crisp value: %f is out of domain: [%.2f, %.2f]", 
 				crisp, x[0], x[x.length]));
 	}
 	
@@ -21,8 +21,9 @@ public class FuzzyOperations {
 	int idx = 0;
 	float distance = Float.MAX_VALUE;
 	
-	for(int i = 0; i < x.length - 1; i++) {
+	for(int i = 1; i < x.length - 1; i++) {
 		float indexdistance = Math.abs(x[i] - integer);
+		// float indexdistance = integer - x[i];
 		if (indexdistance < distance) {
 			distance = indexdistance;
 			idx = i;
@@ -30,7 +31,7 @@ public class FuzzyOperations {
 	}
 	
 	int x1 = idx;
-	int x2 = idx + 1;
+	int x2 = (int) (idx + 1 * Math.signum(decimal));
 	
 	float y1 = xmf[x1];
 	float y2 = xmf[x2];
@@ -38,7 +39,7 @@ public class FuzzyOperations {
 	float fuzzy = (float) (y1 + (decimal / (x2 - x1)) * (y2 - y1));
 
 //	System.out.printf("x1index: %d, x2index: %d,", x1, x2);
-//	System.out.printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x[x1], x[x2], y1, y2);
+//  System.out.printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x[x1], x[x2], y1, y2);
 //	System.out.printf("%d, %.2f, %.2f\n", integer, decimal, fuzzy);
 //	
 //	System.out.printf("%d, %.2f, %.2f\n", integer, decimal, fuzzy);

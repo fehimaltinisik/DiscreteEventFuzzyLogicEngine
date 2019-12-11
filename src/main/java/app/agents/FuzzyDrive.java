@@ -50,7 +50,7 @@ public class FuzzyDrive extends Automobile {
 		PVector normal = null;
 		PVector direction = null;
 		PVector a = null;
-		PVector b;
+		PVector b = null;
 		
 		for (int i = 0; i < points.size(); i++) {
 			a = points.get(i);
@@ -69,9 +69,7 @@ public class FuzzyDrive extends Automobile {
 
 				dir = PVector.sub(b, a);
 			}
-			
-			// applet.circle(normalPoint.x, normalPoint.y, 5);
-			
+						
 			float dist = PVector.dist(normalPoint, predictedLocation);
 			
 			if (dist < threshold) {
@@ -81,10 +79,15 @@ public class FuzzyDrive extends Automobile {
 			}
 
 		}
+		
+		float d = (position.x - a.x) * (b.y - a.y) - (position.y - a.y) * (b.x - a.x);
 
 		distance = PVector.dist(normal, predictedLocation);
-		theta = PVector.angleBetween(PVector.sub(predictedLocation, a), direction);
+		theta = PVector.angleBetween(PVector.sub(predictedLocation, position), direction);
 		
+		theta = theta * ((d > 0) ? -1 : 1);
+		// distance = distance * ((d > 0) ? 1 : -1);
+
 		HashMap<String, Float> crispInputs = new HashMap<String, Float>();
 		
 		crispInputs.put("lateralError", distance);
@@ -95,22 +98,29 @@ public class FuzzyDrive extends Automobile {
 		drivingProblem.evaluateCrispOutputs();
 		
 		float steering = ((DrivingProblem) drivingProblem).getCrispOutputs("steer");
-		PVector steer = PVector.fromAngle(PApplet.radians(steering));
+		PVector steer = PVector.fromAngle(steering);
 		
-		// System.out.printf("Distance: %.2f, Theta: %.2f\n", distance, theta);
+		System.out.printf("Distance: %.2f, Theta: %.2f\n", distance, theta);
 		// System.out.printf("Steer: %s, Streering: %.2f\n", steer.toString(), steering);
 		
-		applyForce(steer);
+		// applyForce(steer);
+		steer(steering);
 		
-		// System.out.printf("Acc: %s, Vel: %s Tar: %s\n", acceleration.toString(), velocity.toString(), "");
+		System.out.printf("Acc: %s, Vel: %s Tar: %s\n", acceleration.toString(), velocity.toString(), "");
 		// System.out.printf("dir: %s, Vel: %s\n", direction.toString(), PVector.sub(predictedLocation, a).toString());
 		
 		steer.mult(25);
 		
+		applet.circle(normal.x, normal.y, 5);
 		applet.circle(steer.x, steer.y, 5);
+
 
 		drivingProblem.debug();
 
+	}
+	
+	public void steer(float rotate) {
+		velocity.rotate(rotate);
 	}
 	
 	public void setFuzzyControlSystem(DrivingProblem drivingProblem) {

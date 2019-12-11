@@ -7,7 +7,8 @@ import main.java.Drawable;
 
 public class FuzzyVariable implements Drawable{
 	
-	private float crisp;
+	private float crispInput;
+	private float crispOutput;
 	private float range;
 	private float lowerBound;
 	private float upperBound;
@@ -79,15 +80,17 @@ public class FuzzyVariable implements Drawable{
 	}
 	
 	public void updateCrispInputs(float crisp, boolean zeroOutsideX) {
-		this.crisp = crisp;
+		this.crispInput = crisp;
 		
 		for (int i = 0; i < membershipFunctions.size() && i < fuzzifiedInputs.length; i++) {
-			fuzzifiedInputs[i] = FuzzyOperations.interpolateMembership(domain, membershipFunctions.get(i), crisp, zeroOutsideX);
+			float interp = FuzzyOperations.interpolateMembership(domain, membershipFunctions.get(i), crisp, zeroOutsideX);
+			fuzzifiedInputs[i] =  Math.max(0, interp);
 		}
 	}
 	
 	public float defuzz(String method) {
-		return FuzzyOperations.defuzz(domain, aggregated, method);
+		crispOutput  = FuzzyOperations.defuzz(domain, aggregated, method);
+		return crispOutput;
 	}
 
 	public void printMembershipFunctions() {
@@ -128,7 +131,7 @@ public class FuzzyVariable implements Drawable{
 	}
 	
 	public float getCrisp() {
-		return crisp;
+		return crispInput;
 	}
 	
 	@Override
@@ -153,8 +156,16 @@ public class FuzzyVariable implements Drawable{
 	public void debug() {
 		System.out.printf(String.format("\t\t<FuzzyVariable: %s>\n", name));
 		
-		System.out.printf(String.format("\t\t\tCrisp Input: %.2f, Fuzzified Inputs: %s\n", crisp, Arrays.toString(fuzzifiedInputs)));
+		System.out.printf(String.format("\t\t\tCrisp Input: %.2f, Fuzzified Inputs: %s\n", crispInput, Arrays.toString(fuzzifiedInputs)));
+		for (float[] activation: activations) {
+			System.out.printf(String.format("\t\t\tActivation: %s\n", Arrays.toString(activation)));
+		}
+		System.out.printf(String.format("\t\t\tDomain: %s\n", Arrays.toString(domain)));
+		for (float[] membership: membershipFunctions) {
+			System.out.printf(String.format("\t\t\tMembership: %s\n", Arrays.toString(membership)));
+		}
 		System.out.printf(String.format("\t\t\tAggregated: %s\n", Arrays.toString(aggregated)));
+		System.out.printf(String.format("\t\t\tCrisp Output: %.2f\n", crispOutput));
 		System.out.printf(String.format("\t\t\tDomain : (%.2f, %.2f), Range : %.2f\n", lowerBound, upperBound, range));
 	
 		System.out.printf(String.format("\t\t</FuzzyVariable: %s>\n", name));

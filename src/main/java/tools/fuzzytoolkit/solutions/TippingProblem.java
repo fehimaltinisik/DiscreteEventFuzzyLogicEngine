@@ -86,8 +86,11 @@ public class TippingProblem extends FuzzyControlSystem{
 
 	@Override
 	public void debug() {
-		// System.out.println(solution.getDefuzzified("tipdefuzz"));
-	}
+		System.out.println("<ControlSystemDebug>\n");
+		
+		solution.debug();
+				
+		System.out.println("</ControlSystemDebug>\n");	}
 
 	@Override
 	public void draw() {

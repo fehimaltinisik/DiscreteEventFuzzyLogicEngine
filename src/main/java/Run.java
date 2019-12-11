@@ -34,8 +34,8 @@ public class Run extends PApplet {
 	
 	TippingProblem tippingProblem;
 	
-	public boolean debug = true;
-	public int counter = 10;
+	public boolean debug = false;
+	public int debugFrame = 15;
 	
 	public static void main(String[] args) {
 		PApplet.main("main.java.Run");
@@ -100,7 +100,7 @@ public class Run extends PApplet {
 	public void draw() {
 		
 		if (debug) {
-			if(counter-- == 0)
+			if(debugFrame-- == 0)
 				System.exit(0);
 		}
 		

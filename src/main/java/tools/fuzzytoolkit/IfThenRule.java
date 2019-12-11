@@ -27,8 +27,8 @@ public class IfThenRule {
 	}
 
 	public void debug() {
-		System.out.printf(String.format("\t\t<FuzzyVariable: %s o %s>\n", left.getName()));
+		System.out.printf(String.format("\t\t<IfThenRule: %s o %s>\n", left.getName(), right.getName()));
 		
-		System.out.printf(String.format("\t\t</FuzzyVariable: %s o %s>\n", right.getName()));		
+		System.out.printf(String.format("\t\t</IfThenRule>\n"));		
 	}
 }

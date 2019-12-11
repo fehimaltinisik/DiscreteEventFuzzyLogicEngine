@@ -94,26 +94,28 @@ public class HUD {
 					functionYOffset + yAxisLength, inputRadius);
 		}else {
 			applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
-					functionYOffset + yAxisLength, inputRadius);
+					functionYOffset + yAxisLength, 
+					inputRadius);
 		}
 		
 //		applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
 //				functionYOffset + yAxisLength, inputRadius);
 
 		for (int i = 1; i < x.length; i++) {
-			if (x[i] > domain[domain.length - 1]) {
-				applet.circle(functionXOffset + xAxisLength * 0.95f, 
+			
+				float xPos = x[0];
+				
+				if (x[0] >= domain[domain.length - 1]){
+					xPos = domain[domain.length - 1];
+				}else if (x[0] <= domain[0]){
+					xPos = domain[0];
+				}else {
+					xPos = x[0];
+				}
+				
+				applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + xPos) / domainRange) * xAxisLength * 0.9f, 
 						functionYOffset + yAxisLength * 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
 						inputRadius);	
-			}else if(x[i] < domain[0]){
-				applet.circle(functionXOffset + xAxisLength * 0.05f, 
-						functionYOffset + yAxisLength * 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
-						inputRadius);	
-			}else {
-				applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
-						functionYOffset + yAxisLength * 0.2f + (1 - x[i]) * yAxisLength * 0.8f, 
-						inputRadius);	
-			}
 		}
 		return functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.50) * yGrid + 1;
 	}

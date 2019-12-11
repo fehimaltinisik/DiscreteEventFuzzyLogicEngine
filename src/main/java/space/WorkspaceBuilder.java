@@ -131,7 +131,9 @@ public class WorkspaceBuilder {
 //			
 			Agent fuzzyDrive = new FuzzyDrive(applet);
 			
-			fuzzyDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(0.44f, 0.37f, 0));
+			fuzzyDrive.spawn(new PVector(/*rand.nextInt(250 + 250) - 250*/00, 
+										/*rand.nextInt(250 + 250) - 250*/-220, 0), 
+					new PVector(-0.75f, 0.37f, 0));
 			fuzzyDrive.registerAsset("Path", path);
 			((Car) fuzzyDrive).setColor(0, 255, 0);
 			((Car) fuzzyDrive).setScale(0.5f);
