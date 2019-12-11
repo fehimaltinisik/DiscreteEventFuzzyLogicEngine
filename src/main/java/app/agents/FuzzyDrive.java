@@ -76,16 +76,22 @@ public class FuzzyDrive extends Automobile {
 				threshold = dist;
 				normal = normalPoint;
 				direction = dir.copy();
+			}else {
+				normal = normalPoint;
 			}
 
 		}
 		
-		float d = (position.x - a.x) * (b.y - a.y) - (position.y - a.y) * (b.x - a.x);
-
+		float d = (position.x - normal.x) * (b.y - normal.y) - (position.y - normal.y) * (b.x - normal.x);
+		
+		System.out.println(String.format("%.2f, %.2f, %.2f, %.2f", (position.x - a.x), (b.y - a.y), (position.y - a.y), (b.x - a.x)));
+		
 		distance = PVector.dist(normal, predictedLocation);
 		theta = PVector.angleBetween(PVector.sub(predictedLocation, position), direction);
 		
-		theta = theta * ((d > 0) ? -1 : 1);
+		theta = theta * ((d >= 0) ? 1 : -1);
+		
+		System.out.println(d);
 		// distance = distance * ((d > 0) ? 1 : -1);
 
 		HashMap<String, Float> crispInputs = new HashMap<String, Float>();
@@ -98,22 +104,15 @@ public class FuzzyDrive extends Automobile {
 		drivingProblem.evaluateCrispOutputs();
 		
 		float steering = ((DrivingProblem) drivingProblem).getCrispOutputs("steer");
-		PVector steer = PVector.fromAngle(steering);
+		
+		steer(steering * 0.7f);
 		
 		System.out.printf("Distance: %.2f, Theta: %.2f\n", distance, theta);
-		// System.out.printf("Steer: %s, Streering: %.2f\n", steer.toString(), steering);
-		
-		// applyForce(steer);
-		steer(steering);
-		
 		System.out.printf("Acc: %s, Vel: %s Tar: %s\n", acceleration.toString(), velocity.toString(), "");
+		
 		// System.out.printf("dir: %s, Vel: %s\n", direction.toString(), PVector.sub(predictedLocation, a).toString());
-		
-		steer.mult(25);
-		
+				
 		applet.circle(normal.x, normal.y, 5);
-		applet.circle(steer.x, steer.y, 5);
-
 
 		drivingProblem.debug();
 

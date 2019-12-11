@@ -37,12 +37,9 @@ public class DrivingProblem extends FuzzyControlSystem{
 		angularError.setName("angularError");
 		solution.registerFuzzyVariable("angularError", angularError);
 		
-//		FuzzyVariable steer = solution.newFuzzyVariable("steer", (float)-Math.PI / 2, (float)Math.PI / 2, 20);
-//		steer.addMembershipFunction("trimf", (float)-Math.PI / 2, (float)-Math.PI / 2, 0);
-//		steer.addMembershipFunction("trimf", 0, (float)Math.PI / 2, (float)Math.PI / 2);
-		FuzzyVariable steer = solution.newFuzzyVariable("steer", (float)-Math.PI / 30, (float)Math.PI / 30, 10);
-		steer.addMembershipFunction("trimf", (float)-Math.PI / 30, (float)-Math.PI / 30, 0);
-		steer.addMembershipFunction("trimf", 0, (float)Math.PI / 30, (float)Math.PI / 30);
+		FuzzyVariable steer = solution.newFuzzyVariable("steer", (float)-Math.PI / 15, (float)Math.PI / 15, 10);
+		steer.addMembershipFunction("trimf", (float)-Math.PI / 15, (float)-Math.PI / 15, 0);
+		steer.addMembershipFunction("trimf", 0, (float)Math.PI / 15, (float)Math.PI / 15);
 		steer.initFuzzyVariableDependencies();
 		steer.setName("steer");
 		solution.registerFuzzyVariable("steer", steer);
@@ -50,28 +47,13 @@ public class DrivingProblem extends FuzzyControlSystem{
 		//solution.newFuzzyVariable("lateralError", -5.9f, 3.75f, 10, 3);
 		//solution.newFuzzyVariable("angularError", (float)-Math.PI / 2, (float)Math.PI / 2, 10, 3);
 		//solution.newFuzzyVariable("steer", 0, 90.5f, 25, 3);
-		
-//		HashMap<String, Float> crispInputs = new HashMap<String, Float>(){/**
-//			 * 
-//			 */
-//			private static final long serialVersionUID = 1L;
-//		
-//		{
-//			put("lateralError", 3.74f);
-//			put("angularError", 0.1f);
-//		}};
-//		
-//		solution.updateCrispInputs(crispInputs);
-		
-		// solution.newActivationRule("LxA", "lateralError", "angularError");
-		// solution.evalActivationOutput("LxA", "0x0", "or", 0, 0);
-		// solution.evalActivationOutput("LxA", "2x2", "or", 2, 2);
-
+				
 		if (toggleDraw) {
 			hud = new HUD(applet, camera, 1280, 768);
 			hud.initOffset();
 			guiStateUpdate();
 		}
+		
 	}
 
 	@Override
@@ -92,16 +74,11 @@ public class DrivingProblem extends FuzzyControlSystem{
 	public void systemUpdate() {
 		
 		solution.clearActivations();
-		
-		// solution.evalActivationOutput("QxS", "0x0", "or", 0, 0);
-		// solution.evalActivationOutput("QxS", "2x2", "or", 2, 2);	
-		
-		// solution.activate("QxS", "0x0", "tip", 0);
-		// solution.activate("QxS", "2x2", "tip", 2);
-		solution.activate("lateralError", 0, "steer", 1);
-		solution.activate("lateralError", 1, "steer", 0);
-//		solution.activate("angularError", 0, "steer", 1);
-//		solution.activate("angularError", 1, "steer", 0);
+	
+//		solution.activate("lateralError", 0, "steer", 1);
+//		solution.activate("lateralError", 1, "steer", 0);
+		solution.activate("angularError", 0, "steer", 1);
+		solution.activate("angularError", 1, "steer", 0);
 		
 		solution.aggregate("steer");
 	}
