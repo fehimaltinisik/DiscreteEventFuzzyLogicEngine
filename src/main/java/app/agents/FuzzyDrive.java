@@ -26,11 +26,9 @@ public class FuzzyDrive extends Automobile {
 	@Override
 	public void calculate() {
 		lineFollow();
-		drivingProblem.draw();
 	}
-
-	public void lineFollow() {
-
+	
+	public float calculateSteer() {
 		Path path = (Path) assets.get("Path");
 
 		PVector predict = velocity.copy();
@@ -109,8 +107,6 @@ public class FuzzyDrive extends Automobile {
 		
 		float steering = ((DrivingProblem) drivingProblem).getCrispOutputs("steer");
 		
-		steer(steering * 1.0f);
-		
 		System.out.printf("Distance: %.2f, Theta: %.2f\n", distance, theta);
 		System.out.printf("Acc: %s, Vel: %s Tar: %s\n", acceleration.toString(), velocity.toString(), "");
 		
@@ -119,7 +115,20 @@ public class FuzzyDrive extends Automobile {
 		applet.circle(normal.x, normal.y, 5);
 
 		drivingProblem.debug();
+		drivingProblem.draw();
 
+		
+		return steering;
+
+	}
+
+	public void lineFollow() {
+		float steeringAngle = calculateSteer();
+		steer(steeringAngle);
+	}
+	
+	public void experiment() {
+		calculateSteer();
 	}
 	
 	public void steer(float rotate) {

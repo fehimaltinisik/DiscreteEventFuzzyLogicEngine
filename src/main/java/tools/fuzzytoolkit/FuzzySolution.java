@@ -146,7 +146,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 			
 			float [] n = new float[1 + fuzzyVariableEntry.getValue().numberOfMembershipFunctions()];
 			
-			n[0] = fuzzyVariableEntry.getValue().getCrisp();
+			n[0] = fuzzyVariableEntry.getValue().getCrispInput();
 			
 			System.arraycopy(fuzzyVariableEntry.getValue().getFuzzifiedInputs(), 0, n, 1, fuzzyVariableEntry.getValue().numberOfMembershipFunctions());
 			

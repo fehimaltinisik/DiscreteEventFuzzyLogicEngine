@@ -138,13 +138,14 @@ public class WorkspaceBuilder {
 			fuzzyDrive.registerAsset("Path", path);
 			((Car) fuzzyDrive).setColor(0, 255, 0);
 			((Car) fuzzyDrive).setScale(0.5f);
+			((Car) fuzzyDrive).toggleManualDriving();
 			
 			DrivingProblem drivingProblem = new DrivingProblem(applet, true, false);
 			drivingProblem.setCamera(camera);
 			drivingProblem.solutionFactory();
 			
 			((FuzzyDrive) fuzzyDrive).setFuzzyControlSystem(drivingProblem);
-			((FuzzyDrive) fuzzyDrive).setMaxVelocity(4f);
+			((FuzzyDrive) fuzzyDrive).setMaxVelocity(1.5f);
 			
 			agents.add(fuzzyDrive);
 			assets.add(path);

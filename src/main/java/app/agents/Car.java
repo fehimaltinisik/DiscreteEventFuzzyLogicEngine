@@ -9,11 +9,12 @@ import javax.naming.OperationNotSupportedException;
 import com.sun.javafx.css.CalculatedValue;
 
 import main.java.app.agents.options.Drivable;
+import main.java.app.agents.options.Experimentable;
 import main.java.app.agents.options.Interactable;
 import main.java.app.agents.options.Tracable;
 import main.java.utils.CVector;
 
-public class Car extends Agent implements Drivable, Interactable, Tracable{
+public class Car extends Agent implements Drivable, Interactable, Tracable, Experimentable{
 	PApplet applet;
 	
 	protected PVector position;
@@ -199,12 +200,22 @@ public class Car extends Agent implements Drivable, Interactable, Tracable{
 		steerLeft();
 	}
 
-	public void operate() {
+	public void operate() {		
 		if (manualDrivingEnabled) {
+			experimental();
 			manualControl();
 		}else {
 			calculate();
 		}
+	}
+	
+	// FIXME: Causes Method overriding.
+	public void experimental() {
+		experiment();
+	}
+	
+	public void experiment() {
+		System.out.printf(String.format("This is an experiment of: %s class/n", getClass().getName()));
 	}
 	
 	public void toggleFirstPersonCamera() {

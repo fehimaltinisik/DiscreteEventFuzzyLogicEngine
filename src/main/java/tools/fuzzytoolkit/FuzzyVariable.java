@@ -130,8 +130,12 @@ public class FuzzyVariable implements Drawable{
 		return guiDependencies;
 	}
 	
-	public float getCrisp() {
+	public float getCrispInput() {
 		return crispInput;
+	}
+	
+	public float getCrispOutput() {
+		return crispOutput;
 	}
 	
 	@Override
