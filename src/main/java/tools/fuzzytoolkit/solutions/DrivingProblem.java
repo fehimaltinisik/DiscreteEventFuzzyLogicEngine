@@ -21,29 +21,38 @@ public class DrivingProblem extends FuzzyControlSystem{
 	@Override
 	public void solutionFactory() {
 		
+		
+		int precision = 20;
+		
 		solution = new FuzzySolution();
 		
-		FuzzyVariable lateralError = solution.newFuzzyVariable("lateralError", -5.9f, 3.75f, 10);
-		lateralError.addMembershipFunction("trimf", -5.9f, -5.9f, 0);
-		lateralError.addMembershipFunction("trimf", 0, 3.75f, 3.75f);
+		FuzzyVariable lateralError = solution.newFuzzyVariable("lateralError", -25.9f, 13.76f, precision);
+		lateralError.addMembershipFunction("trimf", -25.9f, -25.9f, 0);
+		lateralError.addMembershipFunction("trimf", 0, 13.76f, 13.76f);
 		lateralError.initFuzzyVariableDependencies();
 		lateralError.setName("lateralError");
 		solution.registerFuzzyVariable("lateralError", lateralError);
 		
-		FuzzyVariable angularError = solution.newFuzzyVariable("angularError", (float)-Math.PI, (float)Math.PI, 10);
+		FuzzyVariable angularError = solution.newFuzzyVariable("angularError", (float)-Math.PI, (float)Math.PI, precision);
 		angularError.addMembershipFunction("trimf", (float)-Math.PI, (float)-Math.PI, 0);
 		angularError.addMembershipFunction("trimf", 0, (float)Math.PI, (float)Math.PI);
 		angularError.initFuzzyVariableDependencies();
 		angularError.setName("angularError");
 		solution.registerFuzzyVariable("angularError", angularError);
 		
-		FuzzyVariable steer = solution.newFuzzyVariable("steer", (float)-Math.PI / 15, (float)Math.PI / 15, 10);
-		steer.addMembershipFunction("trimf", (float)-Math.PI / 15, (float)-Math.PI / 15, 0);
-		steer.addMembershipFunction("trimf", 0, (float)Math.PI / 15, (float)Math.PI / 15);
+		FuzzyVariable steer = solution.newFuzzyVariable("steer", (float)-Math.PI / 30, (float)Math.PI / 30, precision);
+		steer.addMembershipFunction("trimf", (float)-Math.PI / 30, (float)-Math.PI / 30, 0);
+		steer.addMembershipFunction("trimf", (float)-Math.PI / 30, 0, (float)Math.PI / 30);
+		steer.addMembershipFunction("trimf", 0, (float)Math.PI / 30, (float)Math.PI / 30);
 		steer.initFuzzyVariableDependencies();
 		steer.setName("steer");
 		solution.registerFuzzyVariable("steer", steer);
 		
+		solution.newActivationRule("lateralleftANDangularleft", "lateralError", "angularError");
+		solution.newActivationRule("lateralrightANDangularright", "lateralError", "angularError");
+		solution.newActivationRule("lateralrightANDangularleft", "lateralError", "angularError");
+		solution.newActivationRule("lateralleftANDangularright", "lateralError", "angularError");
+
 		//solution.newFuzzyVariable("lateralError", -5.9f, 3.75f, 10, 3);
 		//solution.newFuzzyVariable("angularError", (float)-Math.PI / 2, (float)Math.PI / 2, 10, 3);
 		//solution.newFuzzyVariable("steer", 0, 90.5f, 25, 3);
@@ -74,11 +83,28 @@ public class DrivingProblem extends FuzzyControlSystem{
 	public void systemUpdate() {
 		
 		solution.clearActivations();
+		
+		solution.evalActivationOutput("lateralleftANDangularleft", 
+				"lateralleftANDangularleftOut", "and", 0, 0);
 	
+		solution.evalActivationOutput("lateralrightANDangularright", 
+				"lateralrightANDangularrightOut", "and", 1, 1);
+		
+		solution.evalActivationOutput("lateralrightANDangularleft", 
+				"lateralrightANDangularleftOut", "and", 1, 0);
+		
+		solution.evalActivationOutput("lateralleftANDangularright", 
+				"lateralleftANDangularrightOut", "and", 0, 1);
+		
+		solution.activate("lateralleftANDangularleft", "lateralleftANDangularleftOut", "steer", 2);
+		solution.activate("lateralrightANDangularright", "lateralrightANDangularrightOut", "steer", 0);
+		solution.activate("lateralrightANDangularleft", "lateralrightANDangularleftOut", "steer", 1);
+		solution.activate("lateralleftANDangularright", "lateralleftANDangularrightOut", "steer", 1);
+
 //		solution.activate("lateralError", 0, "steer", 1);
 //		solution.activate("lateralError", 1, "steer", 0);
-		solution.activate("angularError", 0, "steer", 1);
-		solution.activate("angularError", 1, "steer", 0);
+//		solution.activate("angularError", 0, "steer", 1);
+//		solution.activate("angularError", 1, "steer", 0);
 		
 		solution.aggregate("steer");
 	}
@@ -99,10 +125,7 @@ public class DrivingProblem extends FuzzyControlSystem{
 		solution.draw();
 		if (toggleDraw) {
 			if(!toggleDrawMimimal) {
-				HashMap<String, float[]> hash = solution.getFuzzifiedOutputs();
-				hash.remove("steer");
-				hud.updateDiscreteFunctionsInputs(hash);
-				hud.drawDiscreteFunctions("all");
+				hud.draw();
 			}else {
 			}
 		}
@@ -112,10 +135,14 @@ public class DrivingProblem extends FuzzyControlSystem{
 	public void guiStateUpdate() {
 		
 		solution.setUpScene();
-		HashMap<String, List<float[]>> functions = solution.getSceneElements();
 		
-		hud.registerFuzzyVariable("lateralError", functions.get("lateralError"));
-		hud.registerFuzzyVariable("angularError", functions.get("angularError"));
+		hud.registerFuzzyVariable("lateralError", solution.getFuzzyVariable("lateralError"));
+		hud.registerFuzzyVariable("angularError", solution.getFuzzyVariable("angularError"));
+		hud.registerFuzzyVariable("steer", solution.getFuzzyVariable("steer"));
+		
+		hud.drawFuzzyInputVariable("lateralError");
+		hud.drawFuzzyInputVariable("angularError");
+		hud.drawFuzzyOutputVariable("steer");
 
 	}
 	

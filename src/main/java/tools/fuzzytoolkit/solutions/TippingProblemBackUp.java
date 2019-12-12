@@ -89,8 +89,7 @@ public class TippingProblemBackUp extends FuzzyControlSystem{
 			if(!toggleDrawMimimal) {
 				HashMap<String, float[]> hash = solution.getFuzzifiedOutputs();
 				hash.remove("tip");
-				hud.updateDiscreteFunctionsInputs(hash);
-				hud.drawDiscreteFunctions("all");
+				// hud.drawDiscreteFunctions("all");
 			}else {
 			}
 		}
@@ -102,8 +101,8 @@ public class TippingProblemBackUp extends FuzzyControlSystem{
 		solution.setUpScene();
 		HashMap<String, List<float[]>> functions = solution.getSceneElements();
 		
-		hud.registerFuzzyVariable("quality", functions.get("quality"));
-		hud.registerFuzzyVariable("service", functions.get("service"));
+		// hud.registerFuzzyInputVariable("quality", functions.get("quality"));
+		// hud.registerFuzzyInputVariable("service", functions.get("service"));
 
 	}
 

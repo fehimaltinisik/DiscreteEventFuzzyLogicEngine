@@ -25,8 +25,8 @@ public class FuzzyDrive extends Automobile {
 
 	@Override
 	public void calculate() {
-		drivingProblem.draw();
 		lineFollow();
+		drivingProblem.draw();
 	}
 
 	public void lineFollow() {
@@ -48,6 +48,7 @@ public class FuzzyDrive extends Automobile {
 		
 		PVector normalPoint = null;
 		PVector normal = null;
+		PVector dir = null;
 		PVector direction = null;
 		PVector a = null;
 		PVector b = null;
@@ -57,7 +58,7 @@ public class FuzzyDrive extends Automobile {
 			b = points.get((i + 1) % points.size());
 
 			normalPoint = Path.getNormalPoint(predictedLocation, a, b);
-			PVector dir = PVector.sub(b, a);
+			dir = PVector.sub(b, a);
 
 			if (normalPoint.x < PApplet.min(a.x, b.x) || normalPoint.x > PApplet.max(a.x, b.x)
 					|| normalPoint.y < PApplet.min(a.y, b.y) || normalPoint.y > PApplet.max(a.y, b.y)) {
@@ -76,10 +77,15 @@ public class FuzzyDrive extends Automobile {
 				threshold = dist;
 				normal = normalPoint;
 				direction = dir.copy();
-			}else {
-				normal = normalPoint;
 			}
-
+		}
+		
+		if (normal == null) {
+			normal = normalPoint;
+		}
+		
+		if (direction == null) {
+			direction = dir;
 		}
 		
 		float d = (position.x - normal.x) * (b.y - normal.y) - (position.y - normal.y) * (b.x - normal.x);
@@ -90,9 +96,7 @@ public class FuzzyDrive extends Automobile {
 		theta = PVector.angleBetween(PVector.sub(predictedLocation, position), direction);
 		
 		theta = theta * ((d >= 0) ? 1 : -1);
-		
-		System.out.println(d);
-		// distance = distance * ((d > 0) ? 1 : -1);
+		distance = distance * ((d >= 0) ? 1 : -1);
 
 		HashMap<String, Float> crispInputs = new HashMap<String, Float>();
 		
@@ -105,7 +109,7 @@ public class FuzzyDrive extends Automobile {
 		
 		float steering = ((DrivingProblem) drivingProblem).getCrispOutputs("steer");
 		
-		steer(steering * 0.7f);
+		steer(steering * 1.0f);
 		
 		System.out.printf("Distance: %.2f, Theta: %.2f\n", distance, theta);
 		System.out.printf("Acc: %s, Vel: %s Tar: %s\n", acceleration.toString(), velocity.toString(), "");

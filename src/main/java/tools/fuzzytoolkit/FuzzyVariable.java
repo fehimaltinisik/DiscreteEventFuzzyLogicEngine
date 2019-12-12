@@ -170,4 +170,12 @@ public class FuzzyVariable implements Drawable{
 	
 		System.out.printf(String.format("\t\t</FuzzyVariable: %s>\n", name));
 	}
+
+	public float[] getDomain() {
+		return domain;
+	}
+
+	public float[] getAggregated() {
+		return aggregated;
+	}
 }

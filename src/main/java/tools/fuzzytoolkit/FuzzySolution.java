@@ -202,5 +202,9 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		
 		System.out.println("\t</FuzzySolution>\n");
 	}
+
+	public FuzzyVariable getFuzzyVariable(String key) {
+		return fuzzyVariables.get(key);
+	}
 	
 }
