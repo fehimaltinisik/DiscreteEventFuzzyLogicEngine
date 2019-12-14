@@ -35,7 +35,7 @@ public class Run extends PApplet {
 	TippingProblem tippingProblem;
 	
 	public boolean debug = false;
-	public int debugFrame = 15;
+	public int debugFrame = 8;
 	
 	public static void main(String[] args) {
 		PApplet.main("main.java.Run");
@@ -72,27 +72,27 @@ public class Run extends PApplet {
 		
 		System.out.println("\n\n\n\n\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n");
 
-		tippingProblem = new TippingProblem(this, false, false);
-		tippingProblem.setCamera(camera);
-		
-		tippingProblem.solutionFactory();
-		tippingProblem.registerCrispInputs(new HashMap<String, Float>() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			{
-				put("quality", 6.5f);
-				put("service", 9.8f);
-			}
-		});
-		
-		tippingProblem.systemUpdate();
-		
-		tippingProblem.evaluateCrispOutputs();
-				
-		tippingProblem.debug();
+//		tippingProblem = new TippingProblem(this, false, false);
+//		tippingProblem.setCamera(camera);
+//		
+//		tippingProblem.solutionFactory();
+//		tippingProblem.registerCrispInputs(new HashMap<String, Float>() {
+//			/**
+//			 * 
+//			 */
+//			private static final long serialVersionUID = 1L;
+//
+//			{
+//				put("quality", 6.5f);
+//				put("service", 9.8f);
+//			}
+//		});
+//		
+//		tippingProblem.systemUpdate();
+//		
+//		tippingProblem.evaluateCrispOutputs();
+//				
+//		tippingProblem.debug();
 			
 	}
 

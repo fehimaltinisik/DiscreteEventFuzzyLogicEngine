@@ -139,23 +139,6 @@ public class Automobile extends Car{
 		}
 	}
 	
-	
-	public float getMaxVelocity() {
-		return maxVelocity;
-	}
-
-	public void setMaxVelocity(float maxVelocity) {
-		this.maxVelocity = maxVelocity;
-	}
-
-	public float getMaxForce() {
-		return maxForce;
-	}
-
-	public void setMaxForce(float maxForce) {
-		this.maxForce = maxForce;
-	}
-
 	public PVector getTarget() {
 		return target;
 	}

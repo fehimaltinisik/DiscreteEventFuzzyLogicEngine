@@ -9,12 +9,12 @@ import main.java.tools.fuzzytoolkit.FuzzySolution;
 import main.java.tools.fuzzytoolkit.FuzzyVariable;
 import processing.core.PApplet;
 
-public class DrivingProblem extends FuzzyControlSystem{
+public abstract class DrivingController extends FuzzyControlSystem{
 
 	HashMap<String, Float> crispInputs = new HashMap<String, Float>();
 	HashMap<String, Float> crispOutputs = new HashMap<String, Float>();
 		
-	public DrivingProblem(PApplet applet, boolean toggleDraw, boolean toggleDrawMinimal) {
+	public DrivingController(PApplet applet, boolean toggleDraw, boolean toggleDrawMinimal) {
 		super(applet, toggleDraw, toggleDrawMinimal);
 	}
 
@@ -75,43 +75,11 @@ public class DrivingProblem extends FuzzyControlSystem{
 	@Override
 	public void evaluateCrispOutputs() {
 		solution.defuzz("steer", "steerDefuzz", "centroid");
-		crispOutputs.remove("steer");
 		crispOutputs.put("steer", solution.getDefuzzified("steerDefuzz"));
 	}
 
 	@Override
-	public void systemUpdate() {
-		
-		solution.clearActivations();
-		
-		solution.evalActivationOutput("lateralleftANDangularleft", 
-				"lateralleftANDangularleftOut", "and", 0, 0);
-	
-		solution.evalActivationOutput("lateralrightANDangularright", 
-				"lateralrightANDangularrightOut", "and", 1, 1);
-		
-		solution.evalActivationOutput("lateralrightANDangularleft", 
-				"lateralrightANDangularleftOut", "and", 1, 0);
-		
-		solution.evalActivationOutput("lateralleftANDangularright", 
-				"lateralleftANDangularrightOut", "and", 0, 1);
-		
-		solution.activate("lateralleftANDangularleft", "lateralleftANDangularleftOut", "steer", 2);
-		solution.activate("lateralrightANDangularright", "lateralrightANDangularrightOut", "steer", 0);
-		solution.activate("lateralrightANDangularleft", "lateralrightANDangularleftOut", "steer", 1);
-		solution.activate("lateralleftANDangularright", "lateralleftANDangularrightOut", "steer", 1);
-		
-		
-//		solution.activate("lateralError", 0, "steer", 2);
-//		solution.activate("lateralError", 1, "steer", 0);
-
-//		solution.activate("lateralError", 0, "steer", 1);
-//		solution.activate("lateralError", 1, "steer", 0);
-//		solution.activate("angularError", 0, "steer", 1);
-//		solution.activate("angularError", 1, "steer", 0);
-		
-		solution.aggregate("steer");
-	}
+	public abstract void systemUpdate();
 
 	@Override
 	public void debug() {

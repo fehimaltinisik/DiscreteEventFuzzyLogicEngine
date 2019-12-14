@@ -8,12 +8,13 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 
 import main.java.space.items.Path;
 import main.java.tools.fuzzytoolkit.FuzzyControlSystem;
-import main.java.tools.fuzzytoolkit.solutions.DrivingProblem;
+import main.java.tools.fuzzytoolkit.solutions.DrivingController;
+import main.java.tools.fuzzytoolkit.solutions.ImprovedDriving;
 import processing.core.PApplet;
 import processing.core.PVector;
 
 public class FuzzyDrive extends Automobile {
-	protected FuzzyControlSystem drivingProblem;
+	protected DrivingController drivingController;
 
 	public FuzzyDrive(PApplet applet, PVector position, PVector velocity) {
 		super(applet, position, velocity);
@@ -34,7 +35,7 @@ public class FuzzyDrive extends Automobile {
 		PVector predict = velocity.copy();
 
 		predict.normalize();
-		predict.mult(25);
+		predict.mult(1);
 
 		PVector predictedLocation = PVector.add(position, predict);
 
@@ -50,6 +51,8 @@ public class FuzzyDrive extends Automobile {
 		PVector direction = null;
 		PVector a = null;
 		PVector b = null;
+		PVector globalA = null;
+		PVector globalB = null;
 		
 		for (int i = 0; i < points.size(); i++) {
 			a = points.get(i);
@@ -62,10 +65,12 @@ public class FuzzyDrive extends Automobile {
 					|| normalPoint.y < PApplet.min(a.y, b.y) || normalPoint.y > PApplet.max(a.y, b.y)) {
 
 				normalPoint = b.copy();
-
+				
 				a = points.get((i + 1) % points.size());
 				b = points.get((i + 2) % points.size());
 
+				// normalPoint = normalPoint.add(PVector.fromAngle(PVector.sub(b, a).heading()).mult(30));
+				
 				dir = PVector.sub(b, a);
 			}
 						
@@ -75,7 +80,9 @@ public class FuzzyDrive extends Automobile {
 				threshold = dist;
 				normal = normalPoint;
 				direction = dir.copy();
-			}
+				globalA = a.copy();
+				globalB = b.copy();
+			}	
 		}
 		
 		if (normal == null) {
@@ -86,40 +93,56 @@ public class FuzzyDrive extends Automobile {
 			direction = dir;
 		}
 		
-		float d = (position.x - normal.x) * (b.y - normal.y) - (position.y - normal.y) * (b.x - normal.x);
-		
-		System.out.println(String.format("%.2f, %.2f, %.2f, %.2f", (position.x - a.x), (b.y - a.y), (position.y - a.y), (b.x - a.x)));
+		if (globalA == null || globalB == null) {
+			globalA = a.copy();
+			globalB = b.copy();
+		}
 		
 		distance = PVector.dist(normal, predictedLocation);
 		theta = PVector.angleBetween(PVector.sub(predictedLocation, position), direction);
 		
-		theta = theta * ((d >= 0) ? 1 : -1);
-		distance = distance * ((d >= 0) ? 1 : -1);
+		float u = (position.x - globalA.x);
+		float v = (globalB.y - globalA.y);
+		float w = (position.y - globalA.y);
+		float x = (globalB.x - globalA.x);
+		
+		PVector temp = PVector.sub(predictedLocation, position);
+		
+		float lateralErrorOrientation = Math.signum(u * v - w * x);
+		float angularErrorOrientation = Math.signum(temp.dot(direction)) * Math.signum(temp.x * direction.y - temp.y * direction.x);
+		
+//		System.out.println(String.format("%.2f, %.2f, %.2f, %.2f, %.2f", Math.signum(lateralErrorOrientation), u, v, w, x));
+//		System.out.println(String.format("%s, %s, %s", globalA.toString(), globalB.toString(), position.toString()));
+//		System.out.println(String.format("%.2f, %.2f", distance, theta));
+		
+		applet.circle(normal.x, normal.y, 5);
+//		applet.circle(globalA.x, globalA.y, 5);
+//		applet.circle(globalB.x, globalB.y, 5);
+//		applet.text("a", globalA.x, globalA.y);
+//		applet.text("b", globalB.x, globalB.y);
+
+		distance = distance * lateralErrorOrientation * -1;
+		theta = theta * angularErrorOrientation * -1;
 
 		HashMap<String, Float> crispInputs = new HashMap<String, Float>();
 		
 		crispInputs.put("lateralError", distance);
 		crispInputs.put("angularError", theta);
 		
-		drivingProblem.registerCrispInputs(crispInputs);
-		drivingProblem.systemUpdate();
-		drivingProblem.evaluateCrispOutputs();
+		drivingController.registerCrispInputs(crispInputs);
+		drivingController.systemUpdate();
+		drivingController.evaluateCrispOutputs();
 		
-		float steering = ((DrivingProblem) drivingProblem).getCrispOutputs("steer");
-		
-		System.out.printf("Distance: %.2f, Theta: %.2f\n", distance, theta);
-		System.out.printf("Acc: %s, Vel: %s Tar: %s\n", acceleration.toString(), velocity.toString(), "");
-		
+		float steering = drivingController.getCrispOutputs("steer");
+	
+		// System.out.printf("Distance: %.2f, Theta: %.2f\n", distance, theta);
+		// System.out.printf("Acc: %s, Vel: %s Tar: %s\n", acceleration.toString(), velocity.toString(), "");
 		// System.out.printf("dir: %s, Vel: %s\n", direction.toString(), PVector.sub(predictedLocation, a).toString());
 				
-		applet.circle(normal.x, normal.y, 5);
+		// drivingController.debug();
+		drivingController.draw();
 
-		drivingProblem.debug();
-		drivingProblem.draw();
-
-		
 		return steering;
-
 	}
 
 	public void lineFollow() {
@@ -135,7 +158,7 @@ public class FuzzyDrive extends Automobile {
 		velocity.rotate(rotate);
 	}
 	
-	public void setFuzzyControlSystem(DrivingProblem drivingProblem) {
-		this.drivingProblem = drivingProblem;
+	public void setFuzzyControlSystem(DrivingController drivingController) {
+		this.drivingController = drivingController;
 	}
 }

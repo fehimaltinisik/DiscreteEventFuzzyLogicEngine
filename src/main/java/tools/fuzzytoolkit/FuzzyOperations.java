@@ -39,12 +39,18 @@ public class FuzzyOperations {
 	float fuzzy = (float) (y1 + (decimal / (x2 - x1)) * (y2 - y1));
 
 //	System.out.printf("x1index: %d, x2index: %d,", x1, x2);
-//  System.out.printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x[x1], x[x2], y1, y2);
+//	System.out.printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x[x1], x[x2], y1, y2);
 //	System.out.printf("%d, %.2f, %.2f\n", integer, decimal, fuzzy);
 //	
 //	System.out.printf("%d, %.2f, %.2f\n", integer, decimal, fuzzy);
 	
-	return fuzzy;	
+	if (Float.isNaN(fuzzy)) {
+		return 0;
+	}else{
+		return fuzzy;	
+			
+	}
+	
 	
 	}
 

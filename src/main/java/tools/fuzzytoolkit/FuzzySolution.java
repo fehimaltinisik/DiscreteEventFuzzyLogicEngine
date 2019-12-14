@@ -22,6 +22,7 @@ public class FuzzySolution implements Drawable, SceneSetup{
 		
 		fuzzyVariable.generateMembershipFunctionsDomain(lowerBoundary, upperBoundary, precision);
 		fuzzyVariable.generateMembershipFunctions(numberOfFunctions, "trimf");
+		fuzzyVariable.setName(name);
 		
 		registerFuzzyVariable(name, fuzzyVariable);
 	}

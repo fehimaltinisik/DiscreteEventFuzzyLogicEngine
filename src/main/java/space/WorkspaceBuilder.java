@@ -13,7 +13,10 @@ import main.java.app.agents.SmartDrive;
 import main.java.space.items.Asset;
 import main.java.space.items.Item;
 import main.java.space.items.Path;
-import main.java.tools.fuzzytoolkit.solutions.DrivingProblem;
+import main.java.tools.fuzzytoolkit.solutions.BasicDriving;
+import main.java.tools.fuzzytoolkit.solutions.DrivingController;
+import main.java.tools.fuzzytoolkit.solutions.DrivingControllerFactory;
+import main.java.tools.fuzzytoolkit.solutions.ImprovedDriving;
 import peasy.PeasyCam;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -38,6 +41,8 @@ public class WorkspaceBuilder {
 	}
 	
 	public void configure() {
+		DrivingControllerFactory drivingControllerFactory = new DrivingControllerFactory(applet);
+		
 		workspace.setPApplet(applet);
 		workspace.setTerrainResolution(width, height);
 		
@@ -86,13 +91,13 @@ public class WorkspaceBuilder {
 					// new PVector(160, 160),
 					// new PVector(0, 250),
 					// new PVector(-160, 160),
-					new PVector(+200, +200)
+					new PVector(+200, +180)
 					));
 			
 			path.setPoints(points);
 			path.setRadius(15);
 			
-			for(int i = 0; i < 20; i++) {
+			for(int i = 0; i < 5; i++) {
 				Agent smartDrive = new SmartDrive(applet);
 				
 				smartDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(0, 0, 0));
@@ -115,37 +120,41 @@ public class WorkspaceBuilder {
 //			
 //			agents.add(smartDrive);
 //			
-//			for(int i = 0; i < 5; i++) {
-//				Agent fuzzyDrive = new FuzzyDrive(applet);
-//				
-//				fuzzyDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(rand.nextFloat(), rand.nextFloat(), 0));
-//				fuzzyDrive.registerAsset("Path", path);
-//				((Car) fuzzyDrive).setColor(0, 0, 255);
-//				
-//				DrivingProblem drivingProblem = new DrivingProblem(applet, false, false);
-//				drivingProblem.setCamera(camera);
-//				drivingProblem.solutionFactory();
-//				
-//				((FuzzyDrive) fuzzyDrive).setFuzzyControlSystem(drivingProblem);
-//				agents.add(fuzzyDrive);
-//			}
-//			
+			for(int i = 0; i < 10; i++) {
+				Agent fuzzyDrive = new FuzzyDrive(applet);
+				
+//				fuzzyDrive.spawn(new PVector(rand.nextInt(170 + 170) - 170, rand.nextInt(170 + 170) - 170, 0), new PVector(rand.nextFloat() * 2, rand.nextFloat() * 2, 0));
+				fuzzyDrive.spawn(new PVector(20, 190, 0), new PVector(rand.nextFloat() * -1 - 1, rand.nextFloat() * 1 + 1, 0));
+				fuzzyDrive.registerAsset("Path", path);
+				((Car) fuzzyDrive).setColor(255, 255, 255);
+				((Car) fuzzyDrive).setScale(0.5f);
+				((Car) fuzzyDrive).setMaxVelocity(4.0f);
+				
+				DrivingController drivingController = drivingControllerFactory.newDrivingController("Basic");
+				drivingController.setCamera(camera);
+				drivingController.solutionFactory();
+				
+				((FuzzyDrive) fuzzyDrive).setFuzzyControlSystem(drivingController);
+				agents.add(fuzzyDrive);
+			}
+			
 			Agent fuzzyDrive = new FuzzyDrive(applet);
 			
-			fuzzyDrive.spawn(new PVector(/*rand.nextInt(250 + 250) - 250*/200, 
-										/*rand.nextInt(250 + 250) - 250*/-20, 0), 
-					new PVector(-1.45f, 0.37f, 0));
+			fuzzyDrive.spawn(new PVector(/*rand.nextInt(250 + 250) - 250*/20, 
+										/*rand.nextInt(250 + 250) - 250*/210, 0), 
+					new PVector(-1.15f, 0.67f, 0));
 			fuzzyDrive.registerAsset("Path", path);
 			((Car) fuzzyDrive).setColor(0, 255, 0);
 			((Car) fuzzyDrive).setScale(0.5f);
-			((Car) fuzzyDrive).toggleManualDriving();
+			((Car) fuzzyDrive).setMaxVelocity(4.0f);
+			//((Car) fuzzyDrive).toggleManualDriving();
 			
-			DrivingProblem drivingProblem = new DrivingProblem(applet, true, false);
-			drivingProblem.setCamera(camera);
-			drivingProblem.solutionFactory();
+			drivingControllerFactory.setToggleDraw(true);
+			DrivingController drivingController = drivingControllerFactory.newDrivingController("Improved");
+			drivingController.setCamera(camera);
+			drivingController.solutionFactory();
 			
-			((FuzzyDrive) fuzzyDrive).setFuzzyControlSystem(drivingProblem);
-			((FuzzyDrive) fuzzyDrive).setMaxVelocity(1.5f);
+			((FuzzyDrive) fuzzyDrive).setFuzzyControlSystem(drivingController);
 			
 			agents.add(fuzzyDrive);
 			assets.add(path);

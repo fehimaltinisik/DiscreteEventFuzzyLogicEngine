@@ -57,10 +57,84 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 		heading = velocity.heading() - PConstants.HALF_PI;
 	}
 	
+	@Override
+	public void firstPersonCamera() {
+		applet.camera(position.x + 150 * PApplet.cos(heading + PConstants.PI),
+			position.y + 150 * PApplet.sin(heading + PConstants.PI), 100, position.x,
+			position.y, position.z, 0, 0, (float) -1.0);
+	}
+	
+	
 	// FIXME : Access modifier is private.
 	protected void updateHeading() {
 		if (velocity.mag() > 0.05)
 			heading = velocity.heading();
+	}
+	
+	public void calculate() {
+		thrust();
+		steerLeft();
+	}
+
+	public void operate() {		
+		if (manualDrivingEnabled) {
+			experimental();
+			manualControl();
+		}else {
+			calculate();
+		}
+	}
+
+	@Override
+	public void update() {
+		velocity.add(acceleration);
+		velocity.limit(maxVelocity);
+		position.add(velocity);
+		acceleration.mult(0);
+		
+		updateHeading();
+		
+		if (firstPersonCameraEnabled) {
+			firstPersonCamera();
+		}
+	}
+	
+	@Override
+	public void manualControl() {
+		registerKeys();
+		
+		if (keys[0]) 
+			thrust();
+			
+		if (keys[1]) 
+			steerLeft();
+		
+		if (keys[3])
+			steerRight();
+		
+		if (keys[2]) 
+			breaks();
+	}
+	
+	@Override
+	public void registerKeys() {
+
+		if (applet.keyPressed) {
+			if (applet.key == 'w') {
+				keys[0] = true;
+			} else if (applet.key == 'a') {
+				keys[1] = true;
+			} else if (applet.key == 's') {
+				keys[2] = true;
+			} else if (applet.key == 'd') {
+				keys[3] = true;
+			}
+		} else {
+			keys[0] = false;
+			keys[1] = false;
+			keys[2] = false;
+			keys[3] = false;
+		}
 	}
 	
 	@Override
@@ -95,63 +169,22 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 		acceleration.add(force);
 	}
 	
-	@Override
-	public void update() {
-		velocity.add(acceleration);
-		velocity.limit(maxVelocity);
-		position.add(velocity);
-		acceleration.mult(0);
-		
-		updateHeading();
-		
-		if (firstPersonCameraEnabled) {
-			firstPersonCamera();
-		}
+	
+	// FIXME: Causes Method overriding.
+	public void experimental() {
+		experiment();
 	}
 	
-	@Override
-	public void firstPersonCamera() {
-		applet.camera(position.x + 150 * PApplet.cos(heading + PConstants.PI),
-			position.y + 150 * PApplet.sin(heading + PConstants.PI), 100, position.x,
-			position.y, position.z, 0, 0, (float) -1.0);
+	public void experiment() {
+		System.out.printf(String.format("This is an experiment of: %s class/n", getClass().getName()));
 	}
 	
-	@Override
-	public void registerKeys() {
-
-		if (applet.keyPressed) {
-			if (applet.key == 'w') {
-				keys[0] = true;
-			} else if (applet.key == 'a') {
-				keys[1] = true;
-			} else if (applet.key == 's') {
-				keys[2] = true;
-			} else if (applet.key == 'd') {
-				keys[3] = true;
-			}
-		} else {
-			keys[0] = false;
-			keys[1] = false;
-			keys[2] = false;
-			keys[3] = false;
-		}
+	public void toggleFirstPersonCamera() {
+		firstPersonCameraEnabled = !firstPersonCameraEnabled;
 	}
 	
-	@Override
-	public void manualControl() {
-		registerKeys();
-		
-		if (keys[0]) 
-			thrust();
-			
-		if (keys[1]) 
-			steerLeft();
-		
-		if (keys[3])
-			steerRight();
-		
-		if (keys[2]) 
-			breaks();
+	public void toggleManualDriving() {
+		manualDrivingEnabled = !manualDrivingEnabled;
 	}
 	
 	@Override
@@ -194,38 +227,6 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 		
 	}
 	
-	
-	public void calculate() {
-		thrust();
-		steerLeft();
-	}
-
-	public void operate() {		
-		if (manualDrivingEnabled) {
-			experimental();
-			manualControl();
-		}else {
-			calculate();
-		}
-	}
-	
-	// FIXME: Causes Method overriding.
-	public void experimental() {
-		experiment();
-	}
-	
-	public void experiment() {
-		System.out.printf(String.format("This is an experiment of: %s class/n", getClass().getName()));
-	}
-	
-	public void toggleFirstPersonCamera() {
-		firstPersonCameraEnabled = !firstPersonCameraEnabled;
-	}
-	
-	public void toggleManualDriving() {
-		manualDrivingEnabled = !manualDrivingEnabled;
-	}
-	
 	public float getHeading() { return heading; }
 	
 	public PVector getPosition() { return position; }
@@ -239,5 +240,22 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 	public void setScale(float scale) {
 		this.scale = scale;
 	}
+
+	public float getMaxVelocity() {
+		return maxVelocity;
+	}
+
+	public void setMaxVelocity(float maxVelocity) {
+		this.maxVelocity = maxVelocity;
+	}
+
+	public float getMaxForce() {
+		return maxForce;
+	}
+
+	public void setMaxForce(float maxForce) {
+		this.maxForce = maxForce;
+	}
+
 	
 }
