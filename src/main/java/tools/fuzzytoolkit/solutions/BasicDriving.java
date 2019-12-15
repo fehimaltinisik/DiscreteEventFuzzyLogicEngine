@@ -113,16 +113,23 @@ public class BasicDriving extends DrivingController{
 	@Override
 	public void guiStateUpdate() {
 		
-		solution.setUpScene();
-		
-		hud.registerFuzzyVariable("lateralError", solution.getFuzzyVariable("lateralError"));
-		hud.registerFuzzyVariable("angularError", solution.getFuzzyVariable("angularError"));
-		hud.registerFuzzyVariable("steer", solution.getFuzzyVariable("steer"));
-		
-		hud.drawFuzzyInputVariable("lateralError");
-		hud.drawFuzzyInputVariable("angularError");
-		hud.drawFuzzyOutputVariable("steer");
+		if(toggleDraw) {
+			hud = new HUD(applet, camera, 1280, 768);
+			hud.initOffset();
+			hud.setNowObserving(observerName);
 
+			solution.setUpScene();
+			
+			hud.registerFuzzyVariable("lateralError", solution.getFuzzyVariable("lateralError"));
+			hud.registerFuzzyVariable("angularError", solution.getFuzzyVariable("angularError"));
+			hud.registerFuzzyVariable("steer", solution.getFuzzyVariable("steer"));
+			
+			hud.drawFuzzyInputVariable("lateralError");
+			hud.drawFuzzyInputVariable("angularError");
+			hud.drawFuzzyOutputVariable("steer");
+	
+		}
+		
 	}
 
 }

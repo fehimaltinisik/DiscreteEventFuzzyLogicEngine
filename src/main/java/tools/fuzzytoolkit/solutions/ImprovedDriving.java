@@ -55,8 +55,6 @@ public class ImprovedDriving extends DrivingController{
 		solution.registerFuzzyVariable("steer", steer);
 		
 		FuzzyVariable steerFeedback = solution.newFuzzyVariable("steerFeedback", (float)-Math.PI / steeringPrecision, (float)Math.PI / steeringPrecision, precision);
-		// steerFeedback.addMembershipFunction("trimf", (float)-Math.PI / steeringPrecision, (float)-Math.PI / steeringPrecision, (float)-Math.PI / steeringPrecision * correctionMultiplier);
-		// steerFeedback.addMembershipFunction("trimf", (float)Math.PI / steeringPrecision * correctionMultiplier, (float)Math.PI / steeringPrecision , (float)Math.PI / steeringPrecision);
 		steerFeedback.addMembershipFunction("trimf", (float)-Math.PI / steeringPrecision * correctionMultiplier, 0, (float)Math.PI / steeringPrecision * correctionMultiplier);
 		steerFeedback.initFuzzyVariableDependencies();
 		steerFeedback.setName("steerFeedback");
@@ -187,17 +185,25 @@ public class ImprovedDriving extends DrivingController{
 	@Override
 	public void guiStateUpdate() {
 		
-		solution.setUpScene();
+		if(toggleDraw) {
+			hud = new HUD(applet, camera, 1280, 768);
+			hud.initOffset();
+			hud.setNowObserving(observerName);
+			solution.setUpScene();
+			
+			hud.registerFuzzyVariable("lateralError", solution.getFuzzyVariable("lateralError"));
+			hud.registerFuzzyVariable("angularError", solution.getFuzzyVariable("angularError"));
+			hud.registerFuzzyVariable("steerFeedback", solution.getFuzzyVariable("steerFeedback"));
+			hud.registerFuzzyVariable("steer", solution.getFuzzyVariable("steer"));
+			
+			hud.drawFuzzyInputVariable("lateralError");
+			hud.drawFuzzyInputVariable("angularError");
+			hud.drawFuzzyInputVariable("steerFeedback");
+			hud.drawFuzzyOutputVariable("steer");	
+		}else {
+			hud = null;
+		}
 		
-		hud.registerFuzzyVariable("lateralError", solution.getFuzzyVariable("lateralError"));
-		hud.registerFuzzyVariable("angularError", solution.getFuzzyVariable("angularError"));
-		hud.registerFuzzyVariable("steerFeedback", solution.getFuzzyVariable("steerFeedback"));
-		hud.registerFuzzyVariable("steer", solution.getFuzzyVariable("steer"));
-		
-		hud.drawFuzzyInputVariable("lateralError");
-		hud.drawFuzzyInputVariable("angularError");
-		hud.drawFuzzyInputVariable("steerFeedback");
-		hud.drawFuzzyOutputVariable("steer");
 	}
 	
 //	public Float getCrispOutputs(String key) {

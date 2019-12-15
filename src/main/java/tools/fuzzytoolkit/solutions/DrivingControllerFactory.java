@@ -23,7 +23,7 @@ public class DrivingControllerFactory {
 		}else if(controllerSelection == "Advanced") {
 			return new AdvancedDriving(applet, toggleDraw, toggleMinimalDraw);
 		}else {
-			throw new IllegalArgumentException(String.format("Illegal argumnet: %s. Choose either %s, %s", controllerSelection, "Basic", "Improved"));
+			throw new IllegalArgumentException(String.format("Illegal argumnet: %s. Choose either %s, %s or %s", controllerSelection, "Basic", "Improved", "Advanced"));
 		}
 	}
 	

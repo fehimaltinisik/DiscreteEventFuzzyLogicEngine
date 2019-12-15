@@ -110,10 +110,6 @@ public class Run extends PApplet {
 		street.drawGuideLines();
 		
 		street.simulate();
-								
-//		forklift.operate();
-//		forklift.update();
-//		forklift.draw();
 	}
 }
 

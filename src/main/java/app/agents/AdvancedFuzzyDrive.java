@@ -14,14 +14,14 @@ import main.java.tools.fuzzytoolkit.solutions.ImprovedDriving;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class FuzzyDrive extends Automobile {
+public class AdvancedFuzzyDrive extends Automobile {
 	protected DrivingController drivingController;
 
-	public FuzzyDrive(PApplet applet, PVector position, PVector velocity) {
+	public AdvancedFuzzyDrive(PApplet applet, PVector position, PVector velocity) {
 		super(applet, position, velocity);
 	}
 
-	public FuzzyDrive(PApplet applet) {
+	public AdvancedFuzzyDrive(PApplet applet) {
 		super(applet);
 	}
 
@@ -163,7 +163,20 @@ public class FuzzyDrive extends Automobile {
 				if (d < distanceTemp) {
 					distance = d;
 					distanceTemp = d;
-					angle = PVector.angleBetween(position, other.getPosition());
+					
+					PVector orient1 = PVector.fromAngle(heading);
+					PVector orient2 = PVector.fromAngle(other.getHeading());
+					
+					angle = PVector.angleBetween(orient1, orient2);
+				
+					float angularErrorOrientation = Math.signum(orient1.dot(orient2)) * Math.signum(orient1.x * orient2.y - orient2.x * orient1.y);
+
+					if (0 < angle && angle < Math.PI / 2) {
+						angle = angle * angularErrorOrientation * -1;
+					}else {
+						angle = angle * angularErrorOrientation;
+					}
+					
 				}
 			}
 		}
@@ -179,13 +192,15 @@ public class FuzzyDrive extends Automobile {
 	public void lineFollow() {
 		
 		HashMap<String, Float> steeringCrispInputs = calculateSteeringInputs();
-				
+		HashMap<String, Float> separationCrispInputs = separationSteeringInputs();
+		
+		steeringCrispInputs.putAll(separationCrispInputs);
+		
 		drivingController.registerCrispInputs(steeringCrispInputs);
 		drivingController.systemUpdate();
 		drivingController.evaluateCrispOutputs();
 		
 		// drivingController.debug();
-		
 		if(nowObserving) {
 			drivingController.draw();	
 		}
@@ -206,7 +221,7 @@ public class FuzzyDrive extends Automobile {
 	public void toggleObserving() {
 		nowObserving = !nowObserving;
 		drivingController.toggleDrawing();
-		System.out.println("Test1");
+		System.out.println("Test");
 	}
 	
 	public void setFuzzyControlSystem(DrivingController drivingController) {

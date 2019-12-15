@@ -86,11 +86,11 @@ public class SmartDrive extends Automobile {
 
 		for (int i = 0; i < surroundings.size(); i++) {
 			Automobile other = (Automobile) surroundings.get(i);
-			float d = PVector.dist(position, other.position);
+			float d = PVector.dist(position, other.getPosition());
 
 			if ((d > 0) && (d < desiredseparation)) {
 
-				PVector diff = PVector.sub(position, other.position);
+				PVector diff = PVector.sub(position, other.getPosition());
 				diff.normalize();
 				diff.div(d);
 				steer.add(diff);

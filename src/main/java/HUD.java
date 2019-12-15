@@ -16,14 +16,16 @@ public class HUD {
 	private HashMap<String, FuzzyVariable> fuzzyVariables = new HashMap<String, FuzzyVariable>();
 	private List<String> fuzzyInputVariables = new ArrayList<String>();
 	private List<String> fuzzyOutputVariables = new ArrayList<String>();
+	
+	private String nowObserving = "";
 
 	private float figureScale = 1.2f;
 	private float textInfoSize = 15f;
 	private float textDetailScaler = 0.75f;
 	private float inputRadius = 5;
 	
-	int gridXPosition = 0;
-	int gridYPosition = 0;
+	private int gridXPosition = 0;
+	private int gridYPosition = 0;
 	
 	private int windowHeigth;
 	private int windowWidth;
@@ -34,6 +36,9 @@ public class HUD {
 	private int xAxisLength = (int) (150 * figureScale);
 	private int yAxisLength = xAxisLength / 2;
 		
+	private float xAxisScale = 1.50f;
+	private float yAxisScale = 1.70f;
+	
 	PApplet applet = null;
 	PeasyCam camera = null;
 	
@@ -68,8 +73,8 @@ public class HUD {
 		float domainRange = domain[domain.length - 1] - domain[0];
 		float textSize = xAxisLength / textInfoSize * figureScale;
 		
-		int functionXOffset = widthOffset - (int)Math.ceil(xAxisLength * 1.50) * gridXPosition; // TODO : Test xGrid
-		int functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.70) * gridYPosition;
+		int functionXOffset = widthOffset - (int)Math.ceil(xAxisLength * xAxisScale) * gridXPosition; // TODO : Test xGrid
+		int functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * yAxisScale) * gridYPosition;
 		
 		applet.fill(0, 255, 0);
 		applet.stroke(0, 255, 0);
@@ -77,7 +82,7 @@ public class HUD {
 		applet.textSize(textSize);
 		
 		applet.line(functionXOffset, functionYOffset + yAxisLength, functionXOffset + xAxisLength, functionYOffset + yAxisLength);
-		applet.text(variable.getName(), functionXOffset + xAxisLength * 0.5f, functionYOffset + yAxisLength + 21 * figureScale);
+		applet.text(String.format("%s: %s", "Input", variable.getName()), functionXOffset + xAxisLength * 0.5f, functionYOffset + yAxisLength + 21 * figureScale);
 		
 		applet.line(functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset, functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset + yAxisLength);
 		applet.text("u", functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange) + 5, functionYOffset);
@@ -149,7 +154,7 @@ public class HUD {
 		applet.strokeWeight(1);
 		applet.text(String.format("%.2f", variable.getCrispInput()), functionXOffset + xAxisLength * ((Math.abs(domain[0]) + xPos)/ domainRange), functionYOffset + yAxisLength + 10 * figureScale);
 		
-		return functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.50) * gridYPosition + 1;
+		return functionYOffset + (int)Math.ceil(yAxisLength * 1.70) * gridYPosition + 1;
 	}
 	
 	public int drawOutputFunction(FuzzyVariable variable) {
@@ -160,8 +165,8 @@ public class HUD {
 		float domainRange = domain[domain.length - 1] - domain[0];
 		float textSize = xAxisLength / textInfoSize * figureScale;
 		
-		int functionXOffset = widthOffset - (int)Math.ceil(xAxisLength * 1.50) * gridXPosition; // TODO : Test xGrid
-		int functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.70) * gridYPosition;
+		int functionXOffset = widthOffset - (int)Math.ceil(xAxisLength * xAxisScale) * gridXPosition; // TODO : Test xGrid
+		int functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * yAxisScale) * gridYPosition;
 		
 		applet.fill(0, 255, 0);
 		applet.stroke(0, 255, 0);
@@ -169,7 +174,7 @@ public class HUD {
 		applet.textSize(textSize);
 		
 		applet.line(functionXOffset, functionYOffset + yAxisLength, functionXOffset + xAxisLength, functionYOffset + yAxisLength);
-		applet.text(variable.getName(), functionXOffset + xAxisLength * 0.5f, functionYOffset + yAxisLength + 21 * figureScale);
+		applet.text(String.format("%s: %s", "Output", variable.getName()), functionXOffset + xAxisLength * 0.5f, functionYOffset + yAxisLength + 21 * figureScale);
 		
 		applet.line(functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset, functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset + yAxisLength);
 		applet.text("u", functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange) + 5, functionYOffset);
@@ -203,7 +208,22 @@ public class HUD {
 		applet.text(String.format("%.2f", variable.getCrispOutput()), functionXOffset + xAxisLength * ((Math.abs(domain[0]) + variable.getCrispOutput())/ domainRange), functionYOffset + yAxisLength + 10 * figureScale);
 		applet.text("z*", functionXOffset + xAxisLength * ((Math.abs(domain[0]) + variable.getCrispOutput())/ domainRange), functionYOffset);
 
-		return functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * 1.50) * gridYPosition + 1;
+		return functionYOffset  + (int)Math.ceil(yAxisLength * yAxisScale) * gridYPosition + 1;
+	}
+
+	private void drawAssets() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void drawOutputData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void drawInputData() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void drawInputFunctions() {
@@ -252,14 +272,24 @@ public class HUD {
 		camera.beginHUD();
 		
 		drawInputFunctions();
+		drawInputData();
 		drawOutputFunctions();
-		
+		drawOutputData();
 		camera.endHUD();
+		drawAssets();
 		
 		gridXPosition = 0;
 		gridYPosition = 0;
 	}
 		
 	public void setScale(float scale) {this.figureScale = scale;}
+
+	public String getNowObserving() {
+		return nowObserving;
+	}
+
+	public void setNowObserving(String nowObserving) {
+		this.nowObserving = nowObserving;
+	}
 	
 }

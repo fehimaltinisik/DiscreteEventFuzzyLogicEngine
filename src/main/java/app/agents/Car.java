@@ -17,10 +17,15 @@ import main.java.utils.CVector;
 public class Car extends Agent implements Drivable, Interactable, Tracable, Experimentable{
 	PApplet applet;
 	
+	protected String name;
+	
 	protected PVector position;
 	protected CVector velocity;	
 	protected PVector acceleration;
 	
+	protected boolean observable = false;
+	protected boolean nowObserving = false;
+	protected boolean debugging = false;
 	protected boolean firstPersonCameraEnabled = false;
 	protected boolean manualDrivingEnabled = false;
 	
@@ -187,6 +192,14 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 		manualDrivingEnabled = !manualDrivingEnabled;
 	}
 	
+	public void toggleObserving() {
+		nowObserving = !nowObserving;
+	}
+	
+	public void toggleDebugging() {
+		debugging = !debugging;
+	}
+	
 	@Override
 	public void draw() {		
 		applet.pushMatrix();
@@ -256,6 +269,36 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 	public void setMaxForce(float maxForce) {
 		this.maxForce = maxForce;
 	}
-
 	
+	public boolean getNowObserving() {
+		return nowObserving;
+	}
+	
+	public void setNowObserved(boolean nowObserving) {
+		this.nowObserving = nowObserving;
+	}
+
+	public boolean getDebugging() {
+		return debugging;
+	}
+	
+	public void setDebugging(boolean debugging) {
+		this.debugging = debugging;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setObservable(boolean observable) {
+		this.observable = observable;
+	}
+
+	public boolean getObsevable() {
+		return observable;
+	}
 }
