@@ -20,6 +20,8 @@ public class DrivingControllerFactory {
 			return new BasicDriving(applet, toggleDraw, toggleMinimalDraw);
 		}else if(controllerSelection == "Improved") {
 			return new ImprovedDriving(applet, toggleDraw, toggleMinimalDraw);
+		}else if(controllerSelection == "Advanced") {
+			return new AdvancedDriving(applet, toggleDraw, toggleMinimalDraw);
 		}else {
 			throw new IllegalArgumentException(String.format("Illegal argumnet: %s. Choose either %s, %s", controllerSelection, "Basic", "Improved"));
 		}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.text.AbstractDocument.LeafElement;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 
 import main.java.space.items.Path;
@@ -35,8 +36,9 @@ public class FuzzyDrive extends Automobile {
 		PVector predict = velocity.copy();
 
 		predict.normalize();
-		predict.mult(1);
+		predict.mult(25);
 
+		// PVector predictedLocation = position.copy();
 		PVector predictedLocation = PVector.add(position, predict);
 
 		ArrayList<PVector> points = path.getPoints();
@@ -99,30 +101,42 @@ public class FuzzyDrive extends Automobile {
 		}
 		
 		distance = PVector.dist(normal, predictedLocation);
-		theta = PVector.angleBetween(PVector.sub(predictedLocation, position), direction);
+		theta = PVector.angleBetween(PVector.sub(predictedLocation, position).normalize(), direction.normalize());
+		
+		PVector vehicleOrientation = PVector.sub(predictedLocation, position);
+		// PVector vehicleOrientation = PVector.sub(position, predictedLocation);
 		
 		float u = (position.x - globalA.x);
 		float v = (globalB.y - globalA.y);
 		float w = (position.y - globalA.y);
 		float x = (globalB.x - globalA.x);
 		
-		PVector temp = PVector.sub(predictedLocation, position);
+		float p = vehicleOrientation.x * direction.y;
+		float r = vehicleOrientation.y * direction.x;
+		float s = vehicleOrientation.dot(direction);
+		
 		
 		float lateralErrorOrientation = Math.signum(u * v - w * x);
-		float angularErrorOrientation = Math.signum(temp.dot(direction)) * Math.signum(temp.x * direction.y - temp.y * direction.x);
+		float angularErrorOrientation = Math.signum(s) * Math.signum(p - r);
 		
+		System.out.println(String.format("%.2f, %.2f, %.2f, %.2f", angularErrorOrientation, p, r, s));
 //		System.out.println(String.format("%.2f, %.2f, %.2f, %.2f, %.2f", Math.signum(lateralErrorOrientation), u, v, w, x));
 //		System.out.println(String.format("%s, %s, %s", globalA.toString(), globalB.toString(), position.toString()));
 //		System.out.println(String.format("%.2f, %.2f", distance, theta));
 		
 		applet.circle(normal.x, normal.y, 5);
-//		applet.circle(globalA.x, globalA.y, 5);
-//		applet.circle(globalB.x, globalB.y, 5);
-//		applet.text("a", globalA.x, globalA.y);
-//		applet.text("b", globalB.x, globalB.y);
+		applet.circle(globalA.x, globalA.y, 5);
+		applet.circle(globalB.x, globalB.y, 5);
+		applet.text("a", globalA.x, globalA.y);
+		applet.text("b", globalB.x, globalB.y);
 
 		distance = distance * lateralErrorOrientation * -1;
-		theta = theta * angularErrorOrientation * -1;
+		// theta = theta * angularErrorOrientation * -1;
+		if (0 < theta && theta < Math.PI / 2) {
+			theta = theta * angularErrorOrientation * -1;
+		}else {
+			theta = theta * angularErrorOrientation;
+		}
 
 		HashMap<String, Float> crispInputs = new HashMap<String, Float>();
 		

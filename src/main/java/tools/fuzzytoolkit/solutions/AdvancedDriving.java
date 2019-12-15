@@ -1,10 +1,7 @@
 package main.java.tools.fuzzytoolkit.solutions;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import main.java.HUD;
 import main.java.tools.fuzzytoolkit.FuzzyControlSystem;
@@ -12,9 +9,9 @@ import main.java.tools.fuzzytoolkit.FuzzySolution;
 import main.java.tools.fuzzytoolkit.FuzzyVariable;
 import processing.core.PApplet;
 
-public class ImprovedDriving extends DrivingController{
+public class AdvancedDriving extends DrivingController{
 
-	public ImprovedDriving(PApplet applet, boolean toggleDraw, boolean toggleDrawMinimal) {
+	public AdvancedDriving(PApplet applet, boolean toggleDraw, boolean toggleDrawMinimal) {
 		super(applet, toggleDraw, toggleDrawMinimal);
 	}
 
@@ -23,8 +20,6 @@ public class ImprovedDriving extends DrivingController{
 		
 		int precision = 20;
 		int steeringPrecision = 20;
-		
-		float correctionMultiplier = 3f / 16;
 		
 		solution = new FuzzySolution();
 		
@@ -47,20 +42,16 @@ public class ImprovedDriving extends DrivingController{
 		FuzzyVariable steer = solution.newFuzzyVariable("steer", (float)-Math.PI / steeringPrecision, (float)Math.PI / steeringPrecision, precision);
 		steer.addMembershipFunction("trimf", (float)-Math.PI / steeringPrecision, (float)-Math.PI / steeringPrecision, 0);
 		steer.addMembershipFunction("trimf", (float)-Math.PI / steeringPrecision / 8, (float)-Math.PI / steeringPrecision / 16, 0);
+
 		steer.addMembershipFunction("trimf", (float)-Math.PI / steeringPrecision, 0, (float)Math.PI / steeringPrecision);
+
 		steer.addMembershipFunction("trimf", 0, (float)Math.PI / steeringPrecision / 16, (float)Math.PI / steeringPrecision / 8);
 		steer.addMembershipFunction("trimf", 0, (float)Math.PI / steeringPrecision, (float)Math.PI / steeringPrecision);
+		
+		
 		steer.initFuzzyVariableDependencies();
 		steer.setName("steer");
 		solution.registerFuzzyVariable("steer", steer);
-		
-		FuzzyVariable steerFeedback = solution.newFuzzyVariable("steerFeedback", (float)-Math.PI / steeringPrecision, (float)Math.PI / steeringPrecision, precision);
-		// steerFeedback.addMembershipFunction("trimf", (float)-Math.PI / steeringPrecision, (float)-Math.PI / steeringPrecision, (float)-Math.PI / steeringPrecision * correctionMultiplier);
-		// steerFeedback.addMembershipFunction("trimf", (float)Math.PI / steeringPrecision * correctionMultiplier, (float)Math.PI / steeringPrecision , (float)Math.PI / steeringPrecision);
-		steerFeedback.addMembershipFunction("trimf", (float)-Math.PI / steeringPrecision * correctionMultiplier, 0, (float)Math.PI / steeringPrecision * correctionMultiplier);
-		steerFeedback.initFuzzyVariableDependencies();
-		steerFeedback.setName("steerFeedback");
-		solution.registerFuzzyVariable("steerFeedback", steerFeedback);
 		
 //		solution.newFuzzyVariable("lateralError", -30f, 30f, precision, 5);
 //		solution.newFuzzyVariable("angularError", (float)-Math.PI, (float)Math.PI, precision, 5);
@@ -73,9 +64,6 @@ public class ImprovedDriving extends DrivingController{
 
 		solution.newActivationRule("lateralleftANDangularbalance", "lateralError", "angularError");
 		solution.newActivationRule("lateralrightANDangularbalance", "lateralError", "angularError");
-		
-		solution.newActivationRule("lateralleftErrorCorrection", "lateralError", "steerFeedback");
-		solution.newActivationRule("lateralrightErrorCorrection", "lateralError", "steerFeedback");
 				
 		if (toggleDraw) {
 			hud = new HUD(applet, camera, 1280, 768);
@@ -103,12 +91,12 @@ public class ImprovedDriving extends DrivingController{
 		
 		solution.clearActivations();
 		
-		// Basic Rules
 		solution.evalActivationOutput("lateralleftANDangularleft", 
 				"lateralleftANDangularleftOut", "and", 0, 0);
 	
 		solution.evalActivationOutput("lateralrightANDangularright", 
 				"lateralrightANDangularrightOut", "and", 2, 2);
+		
 		
 		solution.evalActivationOutput("lateralrightANDangularleft", 
 				"lateralrightANDangularleftOut", "and", 2, 0);
@@ -116,12 +104,12 @@ public class ImprovedDriving extends DrivingController{
 		solution.evalActivationOutput("lateralleftANDangularright", 
 				"lateralleftANDangularrightOut", "and", 0, 2);
 		
-		// Improved Rules
-//		solution.evalActivationOutput("lateralleftANDangularbalance", 
-//				"lateralleftANDangularbalanceOut", "and", 0, 1);
-//		
-//		solution.evalActivationOutput("lateralrightANDangularbalance", 
-//				"lateralrightANDangularbalanceOut", "and", 2, 1);
+		
+		solution.evalActivationOutput("lateralleftANDangularbalance", 
+				"lateralleftANDangularbalanceOut", "and", 0, 1);
+		
+		solution.evalActivationOutput("lateralrightANDangularbalance", 
+				"lateralrightANDangularbalanceOut", "and", 2, 1);
 		
 		solution.activate("lateralleftANDangularleft", "lateralleftANDangularleftOut", "steer", 4);
 		solution.activate("lateralrightANDangularright", "lateralrightANDangularrightOut", "steer", 0);
@@ -133,44 +121,21 @@ public class ImprovedDriving extends DrivingController{
 		solution.defuzz("steer", "steerDefuzz", "centroid");
 		crispOutputs.put("steer", solution.getDefuzzified("steerDefuzz"));
 		
-		float steerfb = crispOutputs.get("steer");
+		float level0 = crispOutputs.get("steer");
 		
-		solution.updateCrispInputs(new HashMap<String, Float>(){/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+		if (-0.01f < level0 && level0 < 0.01f) {
+			solution.clearActivations();
+			
+			solution.activate("lateralleftANDangularbalance", "lateralleftANDangularbalanceOut", "steer", 3);
+			solution.activate("lateralrightANDangularbalance", "lateralrightANDangularbalanceOut", "steer", 1);	
 
-		{
-			put("steerFeedback", steerfb);
-		}});
+//			solution.activate("lateralError", 0, "steer", 4);
+//			solution.activate("lateralError", 2, "steer", 3);
 
-		solution.evalActivationOutput("lateralleftErrorCorrection", 
-				"lateralleftErrorCorrectionOut", "and", 0, 0);
-		
-		solution.evalActivationOutput("lateralrightErrorCorrection", 
-				"lateralrightErrorCorrectionOut", "and", 2, 0);
-		
-		solution.activate("lateralleftErrorCorrection", "lateralleftErrorCorrectionOut", "steer", 3);
-		solution.activate("lateralrightErrorCorrection", "lateralrightErrorCorrectionOut", "steer", 1);
-		
-		solution.aggregate("steer");
-		
-//		solution.activate("lateralleftANDangularbalance", "lateralleftANDangularbalanceOut", "steer", 3);
-//		solution.activate("lateralrightANDangularbalance", "lateralrightANDangularbalanceOut", "steer", 1);	
-
-//		if (-0.01f < level0 && level0 < 0.01f) {
-//			solution.clearActivations();
-//			
-//			solution.activate("lateralleftANDangularbalance", "lateralleftANDangularbalanceOut", "steer", 3);
-//			solution.activate("lateralrightANDangularbalance", "lateralrightANDangularbalanceOut", "steer", 1);	
-//
-////			solution.activate("lateralError", 0, "steer", 4);
-////			solution.activate("lateralError", 2, "steer", 3);
-//
-//			solution.aggregate("steer");
-//			
-//			System.out.println(String.format("Level0 Condition %.2f", level0));
-//		}
+			solution.aggregate("steer");
+			
+			System.out.println(String.format("Level0 Condition %.2f", level0));
+		}
 	}
 
 	@Override
@@ -191,12 +156,10 @@ public class ImprovedDriving extends DrivingController{
 		
 		hud.registerFuzzyVariable("lateralError", solution.getFuzzyVariable("lateralError"));
 		hud.registerFuzzyVariable("angularError", solution.getFuzzyVariable("angularError"));
-		hud.registerFuzzyVariable("steerFeedback", solution.getFuzzyVariable("steerFeedback"));
 		hud.registerFuzzyVariable("steer", solution.getFuzzyVariable("steer"));
 		
 		hud.drawFuzzyInputVariable("lateralError");
 		hud.drawFuzzyInputVariable("angularError");
-		hud.drawFuzzyInputVariable("steerFeedback");
 		hud.drawFuzzyOutputVariable("steer");
 	}
 	
