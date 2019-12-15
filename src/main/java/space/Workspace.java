@@ -23,7 +23,7 @@ public abstract class Workspace implements Environment{
 	protected List<Agent> agents = new ArrayList<Agent>();
 
 	protected List<Agent> observables= new ArrayList<Agent>();
-	protected Agent observed = null;
+	protected Agent observing = null;
 	
 	protected final int scale = 20;
 	protected int cols, rows, width, height;
@@ -60,7 +60,7 @@ public abstract class Workspace implements Environment{
 			}
 			
 			if(((Car)agent).getNowObserving()) {
-				observed = agent;
+				observing = agent;
 			}
 		}
 		
@@ -80,7 +80,16 @@ public abstract class Workspace implements Environment{
 				
 				if(car instanceof AdvancedFuzzyDrive) {
 					((AdvancedFuzzyDrive)observables.get(i % observables.size())).toggleObserving();
-					Car nextCar = (Car)agents.get((i + 1) % observables.size());
+					
+					if(((AdvancedFuzzyDrive)observables.get(i % observables.size())).isManualDrivingEnabled()) {
+						((AdvancedFuzzyDrive)observables.get(i % observables.size())).toggleManualDriving();
+					}
+					
+					if(((AdvancedFuzzyDrive)observables.get(i % observables.size())).isFirstPersonCameraEnabled()) {
+						((AdvancedFuzzyDrive)observables.get(i % observables.size())).toggleFirstPersonCamera();
+					}
+					
+					Car nextCar = (Car)observables.get((i + 1) % observables.size());
 					
 					if (nextCar instanceof AdvancedFuzzyDrive) {
 						((AdvancedFuzzyDrive)nextCar).toggleObserving();
@@ -88,10 +97,19 @@ public abstract class Workspace implements Environment{
 						((FuzzyDrive)nextCar).toggleObserving();
 					}
 					
+					observing = nextCar;
 					break;
 				}else {
 					((FuzzyDrive)observables.get(i % observables.size())).toggleObserving();
-					Car nextCar = (Car)agents.get((i + 1) % observables.size());
+					Car nextCar = (Car)observables.get((i + 1) % observables.size());
+					
+					if(((FuzzyDrive)observables.get(i % observables.size())).isManualDrivingEnabled()) {
+						((FuzzyDrive)observables.get(i % observables.size())).toggleManualDriving();
+					}
+					
+					if(((FuzzyDrive)observables.get(i % observables.size())).isFirstPersonCameraEnabled()) {
+						((FuzzyDrive)observables.get(i % observables.size())).toggleFirstPersonCamera();
+					}
 					
 					if (nextCar instanceof AdvancedFuzzyDrive) {
 						((AdvancedFuzzyDrive)nextCar).toggleObserving();
@@ -99,6 +117,7 @@ public abstract class Workspace implements Environment{
 						((FuzzyDrive)nextCar).toggleObserving();
 					}
 					
+					observing = nextCar;
 					break;
 				}
 				
@@ -107,11 +126,20 @@ public abstract class Workspace implements Environment{
 		// System.out.println(String.format("Observing: %s", ((Car)agents.get((i + 1) % observables.size() )).getName()));
 	}
 	
+	private void manualTakeoverNext() {
+		((Car)observing).toggleManualDriving();
+	}
+
+	private void switchToFirstPerson() {
+		((Car)observing).toggleFirstPersonCamera();
+		
+	}
+	
 	public boolean registerKey() {
 		if (applet.keyPressed) {
 			lastKeyHit = applet.keyCode;
 			try {
-				Thread.sleep(100);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -127,21 +155,20 @@ public abstract class Workspace implements Environment{
 		
 		if(registerKey()) {
 			if (lastKeyHit == PApplet.UP) {
-				System.out.println("up");
+				manualTakeoverNext();
 			}else if (lastKeyHit == PApplet.DOWN) {
-				System.out.println("down");
+				switchToFirstPerson();
 			}else if (lastKeyHit == PApplet.RIGHT) {
-				System.out.println("right");
+				// System.out.println("right");
 				observeNext();
 			}else if (lastKeyHit == PApplet.LEFT) {
-				System.out.println("left");
 			}
 		}else {
 			lastKeyHit = 0;
 		}
 		
 	}
-	
+
 	public abstract float [][] terrainFactory();
 	public abstract float [][] assetsFactory();
 	

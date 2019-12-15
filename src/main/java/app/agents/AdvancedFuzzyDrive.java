@@ -122,11 +122,11 @@ public class AdvancedFuzzyDrive extends Automobile {
 //		System.out.println(String.format("%s, %s, %s", globalA.toString(), globalB.toString(), position.toString()));
 //		System.out.println(String.format("%.2f, %.2f", distance, theta));
 		
-		applet.circle(normal.x, normal.y, 5);
-		applet.circle(globalA.x, globalA.y, 5);
-		applet.circle(globalB.x, globalB.y, 5);
-		applet.text("a", globalA.x, globalA.y);
-		applet.text("b", globalB.x, globalB.y);
+//		applet.circle(normal.x, normal.y, 5);
+//		applet.circle(globalA.x, globalA.y, 5);
+//		applet.circle(globalB.x, globalB.y, 5);
+//		applet.text("a", globalA.x, globalA.y);
+//		applet.text("b", globalB.x, globalB.y);
 
 		distance = distance * lateralErrorOrientation * -1;
 		// theta = theta * angularErrorOrientation * -1;
@@ -184,8 +184,8 @@ public class AdvancedFuzzyDrive extends Automobile {
 		
 		HashMap<String, Float> crispInputs = new HashMap<String, Float>();
 		
-		crispInputs.put("separationAngle", angle);
-		crispInputs.put("separationDistance", distance);
+		crispInputs.put("sptAngle", angle);
+		crispInputs.put("sptDistance", distance);
 
 		return crispInputs;
 	}
@@ -211,7 +211,19 @@ public class AdvancedFuzzyDrive extends Automobile {
 	}
 	
 	public void experiment() {
-		calculateSteeringInputs();
+		HashMap<String, Float> steeringCrispInputs = calculateSteeringInputs();
+		HashMap<String, Float> separationCrispInputs = separationSteeringInputs();
+		
+		steeringCrispInputs.putAll(separationCrispInputs);
+		
+		drivingController.registerCrispInputs(steeringCrispInputs);
+		drivingController.systemUpdate();
+		drivingController.evaluateCrispOutputs();
+		
+		// drivingController.debug();
+		if(nowObserving) {
+			drivingController.draw();	
+		}		
 	}
 	
 	public void steer(float rotate) {
@@ -221,7 +233,6 @@ public class AdvancedFuzzyDrive extends Automobile {
 	public void toggleObserving() {
 		nowObserving = !nowObserving;
 		drivingController.toggleDrawing();
-		System.out.println("Test");
 	}
 	
 	public void setFuzzyControlSystem(DrivingController drivingController) {

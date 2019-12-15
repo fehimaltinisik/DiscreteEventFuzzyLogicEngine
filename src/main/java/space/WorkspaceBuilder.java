@@ -84,73 +84,90 @@ public class WorkspaceBuilder {
 			Path path = new Path(applet);
 			ArrayList<PVector> points;
 			
-			points = new ArrayList<>(Arrays.asList( 
-					new PVector(+200, +200),
-					new PVector(-200, +200),
-					new PVector(-200, -200),
-					new PVector(+200, -200),
-					// new PVector(250, 0),
-					// new PVector(160, 160),
-					// new PVector(0, 250),
-					// new PVector(-160, 160),
-					new PVector(+200, +180)
-					));
+			boolean deployTestPath = false;
+			boolean deployReynoldsAgent = false;
+			boolean deployReynodlsAgents = true;
+			boolean deployFuzzyDrivenVehicles = true;
 			
-//			points = new ArrayList<>(Arrays.asList( 
-//					new PVector(+200, +200),
-//					new PVector(-200, +200),
-//					new PVector(-200, -200),
-//					new PVector(+200, -200),
-//					// new PVector(250, 0),
-//					// new PVector(160, 160),
-//					// new PVector(0, 250),
-//					// new PVector(-160, 160),
-//					new PVector(+200, +180)
-//			));
-//			
+			int numberOfReynodlsAgents = 20;
+			int numberOfFuzzyDrivenVehicles = 10;
+			
+			if (deployTestPath) {
+				points = new ArrayList<>(Arrays.asList( 
+						new PVector(+200, +200),
+						new PVector(-200, +200),
+						new PVector(-200, -200),
+						new PVector(+200, -200),
+						new PVector(+200, +180)
+						));
+			}else {
+				points = new ArrayList<>(Arrays.asList( 
+						new PVector(+200, +200),
+						new PVector(-200, +200),
+						new PVector(-200, -200),
+						new PVector(-135, -200),
+						new PVector(-135, +40),
+						new PVector(-0, +120),
+						new PVector(+100, +100),
+						new PVector(+100, -80),
+						new PVector(-40, -200),
+						new PVector(-40, -240),
+						//new PVector(-160, -200),
+						// new PVector(-160, -200),
+						new PVector(+200, -240),
+						new PVector(+200, +180)
+						));
+			}
+			
 			path.setPoints(points);
 			path.setRadius(15);
 			
-//			for(int i = 0; i < 5; i++) {
-//				Agent smartDrive = new SmartDrive(applet);
-//				
-//				smartDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(0, 0, 0));
-//				smartDrive.registerAsset("Path", path);
-//				((SmartDrive) smartDrive).setScale(0.5f);
-//				((SmartDrive) smartDrive).setMaxForce(.20f);
-//				((SmartDrive) smartDrive).setMaxVelocity(4f);
-//				
-//				agents.add(smartDrive);
-//			}
-//			
-//			Agent smartDrive = new SmartDrive(applet);
-//			
-//			smartDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(rand.nextFloat(), 0, 0));
-//			smartDrive.registerAsset("Path", path);
-//			((SmartDrive) smartDrive).setScale(0.5f);
-//			
-//			((Car)smartDrive).toggleManualDriving();
-//			((Car)smartDrive).setColor(255, 0, 255);
-//			
-//			agents.add(smartDrive);
-//			
-//			for(int i = 0; i < 10; i++) {
-//				Agent fuzzyDrive = new FuzzyDrive(applet);
-//				
-//				fuzzyDrive.spawn(new PVector(rand.nextInt(150 + 150) - 150, rand.nextInt(150 + 150) - 150, 0), new PVector(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1, 0));
-////				fuzzyDrive.spawn(new PVector(20, 190, 0), new PVector(rand.nextFloat() * -1 - 1, rand.nextFloat() * 1 + 1, 0));
-//				fuzzyDrive.registerAsset("Path", path);
-//				((Car) fuzzyDrive).setColor(255, 255, 255);
-//				((Car) fuzzyDrive).setScale(0.5f);
-//				((Car) fuzzyDrive).setMaxVelocity(4.0f);
-//				
-//				DrivingController drivingController = drivingControllerFactory.newDrivingController("Basic");
-//				drivingController.setCamera(camera);
-//				drivingController.solutionFactory();
-//				
-//				((FuzzyDrive) fuzzyDrive).setFuzzyControlSystem(drivingController);
-//				agents.add(fuzzyDrive);
-//			}
+			if(deployReynoldsAgent) {
+				Agent smartDrive = new SmartDrive(applet);
+				
+				smartDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(rand.nextFloat(), 0, 0));
+				smartDrive.registerAsset("Path", path);
+				((SmartDrive) smartDrive).setScale(0.5f);
+				
+				((Car)smartDrive).toggleManualDriving();
+				((Car)smartDrive).setColor(255, 0, 255);
+				
+				agents.add(smartDrive);				
+			}
+			
+			if (deployReynodlsAgents) {
+				for(int i = 0; i < numberOfReynodlsAgents; i++) {
+					Agent smartDrive = new SmartDrive(applet);
+					
+					smartDrive.spawn(new PVector(rand.nextInt(250 + 250) - 250, rand.nextInt(250 + 250) - 250, 0), new PVector(0, 0, 0));
+					smartDrive.registerAsset("Path", path);
+					((SmartDrive) smartDrive).setScale(0.5f);
+					((SmartDrive) smartDrive).setMaxForce(.20f);
+					((SmartDrive) smartDrive).setMaxVelocity(2f);
+					
+					agents.add(smartDrive);
+				}
+			}
+			
+			if(deployFuzzyDrivenVehicles) {
+				for(int i = 0; i < numberOfFuzzyDrivenVehicles; i++) {
+					Agent fuzzyDrive = new FuzzyDrive(applet);
+					
+					fuzzyDrive.spawn(new PVector(rand.nextInt(150 + 150) - 150, rand.nextInt(150 + 150) - 150, 0), new PVector(rand.nextFloat() * 2, rand.nextFloat() * 2, 0));
+					fuzzyDrive.registerAsset("Path", path);
+					((Car) fuzzyDrive).setColor(255, 255, 255);
+					((Car) fuzzyDrive).setScale(0.5f);
+					((Car) fuzzyDrive).setMaxVelocity(2.0f);
+					
+					DrivingController drivingController = drivingControllerFactory.newDrivingController("Improved");
+					drivingController.setCamera(camera);
+					drivingController.solutionFactory();
+					
+					((FuzzyDrive) fuzzyDrive).setFuzzyControlSystem(drivingController);
+					agents.add(fuzzyDrive);
+				}
+				
+			}
 
 		
 			// Basic Drive
@@ -162,16 +179,16 @@ public class WorkspaceBuilder {
 										rand.nextInt(250 + 250) - 250,
 										// 210, 
 										0), 
-					new PVector(-1.15f, 0.67f, 0));
+					new PVector(-.45f, 0.67f, 0));
 			fuzzyDrive.registerAsset("Path", path);
 			((Car) fuzzyDrive).setColor(255, 255, 0);
 			((Car) fuzzyDrive).setScale(0.5f);
 			((Car) fuzzyDrive).setMaxVelocity(2.5f);
 			((Car) fuzzyDrive).setObservable(true);
-			((Car) fuzzyDrive).setName("BasicFuzzyDriving");
+			((Car) fuzzyDrive).setName("Basic Fuzzy Vehicle");
 			// ((Car) fuzzyDrive).toggleManualDriving();
 			
-			drivingControllerFactory.setToggleDraw(false);
+			// drivingControllerFactory.setToggleDraw(false);
 			DrivingController drivingController = drivingControllerFactory.newDrivingController("Basic");
 			drivingController.setCamera(camera);
 			drivingController.setObserverName(((Car)fuzzyDrive).getName());
@@ -190,16 +207,16 @@ public class WorkspaceBuilder {
 										rand.nextInt(250 + 250) - 250,
 										// 210, 
 										0), 
-					new PVector(-1.15f, 0.67f, 0));
+					new PVector(-.35f, 0.67f, 0));
 			fuzzyDrive.registerAsset("Path", path);
-			((Car) fuzzyDrive).setColor(0, 255, 0);
+			((Car) fuzzyDrive).setColor(127, 0, 127);
 			((Car) fuzzyDrive).setScale(0.5f);
 			((Car) fuzzyDrive).setMaxVelocity(2.5f);
 			((Car) fuzzyDrive).setObservable(true);
-			((Car) fuzzyDrive).setName("FuzzyDrive");
+			((Car) fuzzyDrive).setName("Improved Fuzzy Vehicle");
 			// ((Car) fuzzyDrive).toggleManualDriving();
 			
-			drivingControllerFactory.setToggleDraw(false);
+			// drivingControllerFactory.setToggleDraw(false);
 			drivingController = drivingControllerFactory.newDrivingController("Improved");
 			drivingController.setCamera(camera);
 			drivingController.setObserverName(((Car)fuzzyDrive).getName());
@@ -217,16 +234,16 @@ public class WorkspaceBuilder {
 										rand.nextInt(250 + 250) - 250,
 										// 210, 
 										0), 
-					new PVector(-1.15f, 0.67f, 0));
+					new PVector(-.75f, 0.67f, 0));
 			fuzzyDrive.registerAsset("Path", path);
-			((Car) fuzzyDrive).setColor(255, 255, 0);
+			((Car) fuzzyDrive).setColor(255, 165, 0);
 			((Car) fuzzyDrive).setScale(0.5f);
 			((Car) fuzzyDrive).setMaxVelocity(2.5f);
 			((Car) fuzzyDrive).setObservable(true);
-			((Car) fuzzyDrive).setName("AdvancedFuzzyDrive");
-			// ((Car) fuzzyDrive).toggleManualDriving();
+			((Car) fuzzyDrive).setName("Advanced Fuzzy Vehicle");
+			//((Car) fuzzyDrive).toggleManualDriving();
 			
-			drivingControllerFactory.setToggleDraw(false);
+			// drivingControllerFactory.setToggleDraw(false);
 			drivingController = drivingControllerFactory.newDrivingController("Advanced");
 			drivingController.setCamera(camera);
 			drivingController.setObserverName(((Car)fuzzyDrive).getName());

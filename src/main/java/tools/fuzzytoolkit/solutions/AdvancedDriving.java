@@ -55,16 +55,16 @@ public class AdvancedDriving extends DrivingController{
 		steerFeedback.initFuzzyVariableDependencies();
 		solution.registerFuzzyVariable("steerFeedback", steerFeedback);
 		
-		FuzzyVariable separationDistance = solution.newFuzzyVariable("separationDistance", 0, 30, precision);
+		FuzzyVariable separationDistance = solution.newFuzzyVariable("sptDistance", 0, 30, precision);
 		separationDistance.addMembershipFunction("trimf", 0, 30, 30);
 		separationDistance.initFuzzyVariableDependencies();
-		solution.registerFuzzyVariable("separationDistance", separationDistance);
+		solution.registerFuzzyVariable("sptDistance", separationDistance);
 		
-		FuzzyVariable separationAngle = solution.newFuzzyVariable("separationAngle", (float)-Math.PI, (float)Math.PI, precision);
+		FuzzyVariable separationAngle = solution.newFuzzyVariable("sptAngle", (float)-Math.PI, (float)Math.PI, precision);
 		separationAngle.addMembershipFunction("trimf", (float)-Math.PI, (float)-Math.PI, 0);
 		separationAngle.addMembershipFunction("trimf", 0, (float)Math.PI, (float)Math.PI);
 		separationAngle.initFuzzyVariableDependencies();
-		solution.registerFuzzyVariable("separationAngle", separationAngle);
+		solution.registerFuzzyVariable("sptAngle", separationAngle);
 		
 //		solution.newFuzzyVariable("lateralError", -30f, 30f, precision, 5);
 //		solution.newFuzzyVariable("angularError", (float)-Math.PI, (float)Math.PI, precision, 5);
@@ -81,8 +81,8 @@ public class AdvancedDriving extends DrivingController{
 		solution.newActivationRule("lateralleftErrorCorrection", "lateralError", "steerFeedback");
 		solution.newActivationRule("lateralrightErrorCorrection", "lateralError", "steerFeedback");
 		
-		solution.newActivationRule("separationLeft", "separationDistance", "separationAngle");
-		solution.newActivationRule("separationRight", "separationDistance", "separationAngle");
+		solution.newActivationRule("sptLeft", "sptDistance", "sptAngle");
+		solution.newActivationRule("sptRight", "sptDistance", "sptAngle");
 	}
 
 	@Override
@@ -124,11 +124,11 @@ public class AdvancedDriving extends DrivingController{
 				"lateralrightANDangularbalanceOut", "and", 2, 1);
 		
 		// Advanced
-		solution.evalActivationOutput("separationLeft", 
-				"separationLeftOut", "and", 0, 0);
+		solution.evalActivationOutput("sptLeft", 
+				"sptLeftOut", "and", 0, 0);
 		
-		solution.evalActivationOutput("separationRight", 
-				"separationRight", "and", 0, 1);
+		solution.evalActivationOutput("sptRight", 
+				"sptRight", "and", 0, 1);
 		
 		solution.activate("lateralleftANDangularleft", "lateralleftANDangularleftOut", "steer", 4);
 		solution.activate("lateralrightANDangularright", "lateralrightANDangularrightOut", "steer", 0);
@@ -187,15 +187,15 @@ public class AdvancedDriving extends DrivingController{
 			hud.registerFuzzyVariable("lateralError", solution.getFuzzyVariable("lateralError"));
 			hud.registerFuzzyVariable("angularError", solution.getFuzzyVariable("angularError"));
 			hud.registerFuzzyVariable("steerFeedback", solution.getFuzzyVariable("steerFeedback"));
-			hud.registerFuzzyVariable("separationDistance", solution.getFuzzyVariable("separationDistance"));
-			hud.registerFuzzyVariable("separationAngle", solution.getFuzzyVariable("separationAngle"));
+			hud.registerFuzzyVariable("sptDistance", solution.getFuzzyVariable("sptDistance"));
+			hud.registerFuzzyVariable("sptAngle", solution.getFuzzyVariable("sptAngle"));
 			hud.registerFuzzyVariable("steer", solution.getFuzzyVariable("steer"));
 			
 			hud.drawFuzzyInputVariable("lateralError");
 			hud.drawFuzzyInputVariable("angularError");
 			hud.drawFuzzyInputVariable("steerFeedback");
-			hud.drawFuzzyInputVariable("separationDistance");
-			hud.drawFuzzyInputVariable("separationAngle");
+			hud.drawFuzzyInputVariable("sptDistance");
+			hud.drawFuzzyInputVariable("sptAngle");
 			hud.drawFuzzyOutputVariable("steer");
 	
 		}		

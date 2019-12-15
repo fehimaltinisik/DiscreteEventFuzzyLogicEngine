@@ -22,10 +22,10 @@ public class Street extends Workspace{
 	@Override
 	public void draw() {
 		applet.pushMatrix();
-		applet.translate(-width / 2, -height / 2);
+		applet.translate(-width / 2, -height / 2.0f);
 
-		applet.fill(128, 0, 128);
-		applet.stroke(127);
+		applet.fill(128, 128, 128);
+		applet.stroke(140);
 
 		for (int y = 0; y < rows - 1; y++) {
 			applet.beginShape(PConstants.TRIANGLE_STRIP);
@@ -38,7 +38,7 @@ public class Street extends Workspace{
 
 		applet.popMatrix();
 		
-		Iterator<Entry<String, Asset>> itemsIterator = items.entrySet().iterator();
+Iterator<Entry<String, Asset>> itemsIterator = items.entrySet().iterator();
 		
 		while (itemsIterator.hasNext()) {
 	        Map.Entry<String, Asset> agent = itemsIterator.next();

@@ -27,16 +27,15 @@ public class Path extends Asset{
 	@Override
 	public void draw() {
 
-		applet.beginShape();
-
 		applet.noFill();	
 		applet.stroke(0, 255, 0);
 		
+		applet.beginShape();
 		for (PVector v : getPoints()) {
 			applet.vertex(v.x, v.y);
 		}
 		applet.endShape();
-		
+				
 	}
 	
 	public void addPoint(float x, float y, float z) {

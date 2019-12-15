@@ -70,8 +70,6 @@ public class Run extends PApplet {
 		fill(120, 50, 240);
 		noStroke();
 		
-		System.out.println("\n\n\n\n\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n");
-
 //		tippingProblem = new TippingProblem(this, false, false);
 //		tippingProblem.setCamera(camera);
 //		

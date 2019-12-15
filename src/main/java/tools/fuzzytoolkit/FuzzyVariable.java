@@ -14,6 +14,7 @@ public class FuzzyVariable implements Drawable{
 	private float upperBound;
 	
 	private String name = "";
+	private String method = "";
 	
 	private float[]	domain;
 	private float[] aggregated;
@@ -89,6 +90,7 @@ public class FuzzyVariable implements Drawable{
 	}
 	
 	public float defuzz(String method) {
+		this.setMethod(method);
 		crispOutput  = FuzzyOperations.defuzz(domain, aggregated, method);
 		return crispOutput;
 	}
@@ -182,4 +184,27 @@ public class FuzzyVariable implements Drawable{
 	public float[] getAggregated() {
 		return aggregated;
 	}
+
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
+	}public float getLowerBound() {
+		return lowerBound;
+	}
+
+	public void setLowerBound(float lowerBound) {
+		this.lowerBound = lowerBound;
+	}
+
+	public float getUpperBound() {
+		return upperBound;
+	}
+
+	public void setUpperBound(float upperBound) {
+		this.upperBound = upperBound;
+	}
+
 }

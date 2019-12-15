@@ -190,6 +190,11 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 	
 	public void toggleManualDriving() {
 		manualDrivingEnabled = !manualDrivingEnabled;
+		if(manualDrivingEnabled) {
+			System.out.println(String.format("Manual Takeover: %s", name));
+		}else {
+			System.out.println(String.format("Autonomous Takeover: %s", name));
+		}
 	}
 	
 	public void toggleObserving() {
@@ -199,15 +204,25 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 	public void toggleDebugging() {
 		debugging = !debugging;
 	}
-	
+		
 	@Override
-	public void draw() {		
+	public void draw() {
 		applet.pushMatrix();
 		applet.translate(position.x, position.y, position.z);
 
+		applet.noFill();
+		applet.stroke(255, 0, 0);
+		
+		if (manualDrivingEnabled || nowObserving) {
+			applet.circle(PVector.fromAngle(heading).x * scale, PVector.fromAngle(heading).y * scale, 40 * scale);
+			applet.circle(PVector.fromAngle(heading).x * scale, PVector.fromAngle(heading).y * scale, 65 * scale);
+			applet.textSize(20 * scale);
+			applet.text(name, 20 * scale, 20 * scale);
+		}
+				
 		applet.fill(cRed, cGreen, cBlue);
 		applet.stroke(192);
-				
+		
 		applet.beginShape(PConstants.TRIANGLE_STRIP);
 						
 		applet.rotateZ(heading - PConstants.HALF_PI);
@@ -237,7 +252,6 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 		applet.endShape();
 
 		applet.popMatrix();
-		
 	}
 	
 	public float getHeading() { return heading; }
@@ -301,4 +315,23 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 	public boolean getObsevable() {
 		return observable;
 	}
+	
+	public boolean isManualDrivingEnabled() {
+		return manualDrivingEnabled;
+	}
+
+	public void setManualDrivingEnabled(boolean manualDrivingEnabled) {
+		this.manualDrivingEnabled = manualDrivingEnabled;
+	}
+
+	public boolean isFirstPersonCameraEnabled() {
+		return firstPersonCameraEnabled;
+	}
+
+	public void setFirstPersonCameraEnabled(boolean firstPersonCameraEnabled) {
+		this.firstPersonCameraEnabled = firstPersonCameraEnabled;
+	}
+
+	
+	
 }

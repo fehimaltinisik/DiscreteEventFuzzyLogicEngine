@@ -19,26 +19,38 @@ public class HUD {
 	
 	private String nowObserving = "";
 
-	private float figureScale = 1.2f;
+	private float functionsFigureScale = 1.0f;
+	private float dataFigureScale = 1.0f;
 	private float textInfoSize = 15f;
-	private float textDetailScaler = 0.75f;
-	private float inputRadius = 5;
+	private float textDataSize = 12f;
+	private float spacingDivider = 3f;
+	private float textDetailScaler = 0.95f;
+	private float inputMarkerScale = 5;
 	
-	private int gridXPosition = 0;
-	private int gridYPosition = 0;
+	private int gridXFunctionsPosition = 0;
+	private int gridYFunctionsPosition = 0;
+	
+	private int gridXDataPosition = 0;
 	
 	private int windowHeigth;
 	private int windowWidth;
 	
-	private int widthOffset;
-	private int heigthOffset;
+	private int functionsWidthOffset;
+	private int functionsheigthOffset;
 	
-	private int xAxisLength = (int) (150 * figureScale);
+	private int dataHeightInitialOffset = 60;
+	private int dataWidthOffset = 30;
+	private int dataheigthOffset = dataHeightInitialOffset;
+	
+	private int xAxisLength = (int) (150 * functionsFigureScale);
 	private int yAxisLength = xAxisLength / 2;
 		
 	private float xAxisScale = 1.50f;
 	private float yAxisScale = 1.70f;
 	
+	private int dataFigureXLength = (int) (150 * functionsFigureScale);
+	private float dataFigureYSpacing = textDataSize * 2;
+		
 	PApplet applet = null;
 	PeasyCam camera = null;
 	
@@ -50,8 +62,8 @@ public class HUD {
 	}
 	
 	public void initOffset() {
-		widthOffset = windowWidth - xAxisLength - (int)(xAxisLength * 0.33);
-		heigthOffset = (int)(yAxisLength * 0.33);
+		functionsWidthOffset = windowWidth - xAxisLength - (int)(xAxisLength * 0.33);
+		functionsheigthOffset = (int)(yAxisLength * 0.33);
 	}
 	
 	public void registerFuzzyVariable(String name, FuzzyVariable variable) {
@@ -71,10 +83,10 @@ public class HUD {
 		float[] domain = variable.getDomain();
 		
 		float domainRange = domain[domain.length - 1] - domain[0];
-		float textSize = xAxisLength / textInfoSize * figureScale;
+		float textSize = xAxisLength / textInfoSize * functionsFigureScale;
 		
-		int functionXOffset = widthOffset - (int)Math.ceil(xAxisLength * xAxisScale) * gridXPosition; // TODO : Test xGrid
-		int functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * yAxisScale) * gridYPosition;
+		int functionXOffset = functionsWidthOffset - (int)Math.ceil(xAxisLength * xAxisScale) * gridXFunctionsPosition; // TODO : Test xGrid
+		int functionYOffset = functionsheigthOffset + (int)Math.ceil(yAxisLength * yAxisScale) * gridYFunctionsPosition;
 		
 		applet.fill(0, 255, 0);
 		applet.stroke(0, 255, 0);
@@ -82,13 +94,13 @@ public class HUD {
 		applet.textSize(textSize);
 		
 		applet.line(functionXOffset, functionYOffset + yAxisLength, functionXOffset + xAxisLength, functionYOffset + yAxisLength);
-		applet.text(String.format("%s: %s", "Input", variable.getName()), functionXOffset + xAxisLength * 0.5f, functionYOffset + yAxisLength + 21 * figureScale);
+		applet.text(String.format("%s: %s", "Input", variable.getName()), functionXOffset + xAxisLength * 0.5f, functionYOffset + yAxisLength + 21 * functionsFigureScale);
 		
 		applet.line(functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset, functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset + yAxisLength);
 		applet.text("u", functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange) + 5, functionYOffset);
 		applet.text("1", functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange) + 5, functionYOffset + yAxisLength * 0.2f);
 		
-		textSize = xAxisLength / textInfoSize * textDetailScaler * figureScale;
+		textSize = xAxisLength / textInfoSize * textDetailScaler * functionsFigureScale;
 		applet.textSize(textSize);
 		
 		for (int i = 0; i < variable.numberOfMembershipFunctions(); i++) {
@@ -104,22 +116,22 @@ public class HUD {
 			}
 			// applet.text(Integer.toString((int)domain[domain.length - 1]), functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[domain.length - 1]) / domainRange) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 8 * figureScale);
 		}
-		applet.text(String.format("%.2f", domain[0]), functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[0]) / domainRange) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 10 * figureScale);
-		applet.text(String.format("%.2f", domain[domain.length - 1]), functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[domain.length - 1]) / domainRange) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 10 * figureScale);
+		applet.text(String.format("%.2f", domain[0]), functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[0]) / domainRange) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 10 * functionsFigureScale);
+		applet.text(String.format("%.2f", domain[domain.length - 1]), functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[domain.length - 1]) / domainRange) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 10 * functionsFigureScale);
 
 		applet.fill(255, 0, 0);
 		applet.stroke(255, 0, 0);
 		
 		if (variable.getCrispInput() > domain[domain.length - 1]) {
 			applet.circle(functionXOffset + xAxisLength * 0.95f, 
-					functionYOffset + yAxisLength, inputRadius);
+					functionYOffset + yAxisLength, inputMarkerScale);
 		}else if(variable.getCrispInput() < domain[0]){
 			applet.circle(functionXOffset + xAxisLength * 0.05f, 
-					functionYOffset + yAxisLength, inputRadius);
+					functionYOffset + yAxisLength, inputMarkerScale);
 		}else {
 			applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + variable.getCrispInput()) / domainRange) * xAxisLength * 0.9f, 
 					functionYOffset + yAxisLength, 
-					inputRadius);
+					inputMarkerScale);
 		}
 		
 //		applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + x[0]) / domainRange) * xAxisLength * 0.9f, 
@@ -143,7 +155,7 @@ public class HUD {
 				
 				applet.circle(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + xPos) / domainRange) * xAxisLength * 0.9f, 
 						functionYOffset + yAxisLength * 0.2f + (1 - fuzzifiedInputs[i]) * yAxisLength * 0.8f, 
-						inputRadius);	
+						inputMarkerScale);	
 		}
 		
 		applet.stroke(255, 0, 0);
@@ -152,9 +164,9 @@ public class HUD {
 		applet.line(functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + xPos)/ domainRange) * xAxisLength * 0.9f, functionYOffset, 
 				functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + xPos )/ domainRange)* xAxisLength * 0.90f, functionYOffset + yAxisLength);
 		applet.strokeWeight(1);
-		applet.text(String.format("%.2f", variable.getCrispInput()), functionXOffset + xAxisLength * ((Math.abs(domain[0]) + xPos)/ domainRange), functionYOffset + yAxisLength + 10 * figureScale);
+		applet.text(String.format("%.2f", variable.getCrispInput()), functionXOffset + xAxisLength * ((Math.abs(domain[0]) + xPos)/ domainRange), functionYOffset + yAxisLength + 10 * functionsFigureScale);
 		
-		return functionYOffset + (int)Math.ceil(yAxisLength * 1.70) * gridYPosition + 1;
+		return functionYOffset + (int)Math.ceil(yAxisLength * 1.70) * gridYFunctionsPosition + 1;
 	}
 	
 	public int drawOutputFunction(FuzzyVariable variable) {
@@ -163,10 +175,10 @@ public class HUD {
 		float[] aggregation = variable.getAggregated();
 		
 		float domainRange = domain[domain.length - 1] - domain[0];
-		float textSize = xAxisLength / textInfoSize * figureScale;
+		float textSize = xAxisLength / textInfoSize * functionsFigureScale;
 		
-		int functionXOffset = widthOffset - (int)Math.ceil(xAxisLength * xAxisScale) * gridXPosition; // TODO : Test xGrid
-		int functionYOffset = heigthOffset + (int)Math.ceil(yAxisLength * yAxisScale) * gridYPosition;
+		int functionXOffset = functionsWidthOffset - (int)Math.ceil(xAxisLength * xAxisScale) * gridXFunctionsPosition; // TODO : Test xGrid
+		int functionYOffset = functionsheigthOffset + (int)Math.ceil(yAxisLength * yAxisScale) * gridYFunctionsPosition;
 		
 		applet.fill(0, 255, 0);
 		applet.stroke(0, 255, 0);
@@ -174,17 +186,17 @@ public class HUD {
 		applet.textSize(textSize);
 		
 		applet.line(functionXOffset, functionYOffset + yAxisLength, functionXOffset + xAxisLength, functionYOffset + yAxisLength);
-		applet.text(String.format("%s: %s", "Output", variable.getName()), functionXOffset + xAxisLength * 0.5f, functionYOffset + yAxisLength + 21 * figureScale);
+		applet.text(String.format("%s: %s", "Output", variable.getName()), functionXOffset + xAxisLength * 0.5f, functionYOffset + yAxisLength + 21 * functionsFigureScale);
 		
 		applet.line(functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset, functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange), functionYOffset + yAxisLength);
 		applet.text("u", functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange) + 5, functionYOffset);
 		applet.text("1", functionXOffset + xAxisLength * (Math.abs(domain[0]) / domainRange) + 5, functionYOffset + yAxisLength * 0.2f);
 
-		textSize = xAxisLength / textInfoSize * textDetailScaler * figureScale;
+		textSize = xAxisLength / textInfoSize * textDetailScaler * functionsFigureScale;
 		applet.textSize(textSize);
 		
-		applet.text(String.format("%.2f", domain[0]), functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[0]) / domainRange) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 10 * figureScale);
-		applet.text(String.format("%.2f", domain[domain.length - 1]), functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[domain.length - 1]) / domainRange) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 10 * figureScale);
+		applet.text(String.format("%.2f", domain[0]), functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[0]) / domainRange) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 10 * functionsFigureScale);
+		applet.text(String.format("%.2f", domain[domain.length - 1]), functionXOffset + xAxisLength * 0.05f + ((Math.abs(domain[0]) + domain[domain.length - 1]) / domainRange) * xAxisLength * 0.9f, functionYOffset + yAxisLength + 10 * functionsFigureScale);
 		
 		applet.beginShape();
 		
@@ -205,25 +217,105 @@ public class HUD {
 		applet.strokeWeight(3);
 		applet.line(functionXOffset + xAxisLength * ((Math.abs(domain[0]) + variable.getCrispOutput())/ domainRange), functionYOffset, functionXOffset + xAxisLength * ((Math.abs(domain[0]) + variable.getCrispOutput())/ domainRange), functionYOffset + yAxisLength);
 		applet.strokeWeight(1);
-		applet.text(String.format("%.2f", variable.getCrispOutput()), functionXOffset + xAxisLength * ((Math.abs(domain[0]) + variable.getCrispOutput())/ domainRange), functionYOffset + yAxisLength + 10 * figureScale);
+		applet.text(String.format("%.2f", variable.getCrispOutput()), functionXOffset + xAxisLength * ((Math.abs(domain[0]) + variable.getCrispOutput())/ domainRange), functionYOffset + yAxisLength + 10 * functionsFigureScale);
 		applet.text("z*", functionXOffset + xAxisLength * ((Math.abs(domain[0]) + variable.getCrispOutput())/ domainRange), functionYOffset);
 
-		return functionYOffset  + (int)Math.ceil(yAxisLength * yAxisScale) * gridYPosition + 1;
+		return functionYOffset  + (int)Math.ceil(yAxisLength * yAxisScale) * gridYFunctionsPosition + 1;
 	}
 
-	private void drawAssets() {
-		// TODO Auto-generated method stub
+	private int drawOutputVariable(FuzzyVariable variable) {
+		float textSize = textDataSize * dataFigureScale;
+		float spacing  = textSize + textSize / spacingDivider;
 		
+		int dataXOffset = dataWidthOffset + (int)Math.ceil(dataFigureXLength * dataFigureScale) * gridXDataPosition; // TODO : Test xGrid
+		int dataYOffset = dataheigthOffset + (int)Math.ceil(dataFigureYSpacing);
+		
+		applet.textSize(textSize);
+		applet.fill(0, 255, 0);
+		applet.stroke(0, 255, 0);
+		
+		String variableName = variable.getName();
+		String defuzzificationMethod = variable.getMethod();
+		float lowerBound = variable.getLowerBound();
+		float upperBound = variable.getUpperBound();
+		float crispOutput = variable.getCrispOutput();
+		
+		applet.text(String.format("Output Variable: %s, (%.2f, %.2f)", variableName, lowerBound, upperBound), dataXOffset, dataYOffset+=spacing);		
+		applet.text(String.format("Defuzzification Method: %s", defuzzificationMethod), dataXOffset, dataYOffset+=spacing);
+		applet.text(String.format("Crisp Output: %.2f", crispOutput), dataXOffset, dataYOffset+=spacing);
+		
+		dataheigthOffset = dataYOffset;
+		
+		return dataYOffset + 60;
 	}
 
-	private void drawOutputData() {
-		// TODO Auto-generated method stub
+	private int drawInputVaraible(FuzzyVariable variable) {
+		float textSize =  textDataSize * dataFigureScale;
+		float spacing  = textSize + textSize / spacingDivider;
+
+		int dataXOffset = dataWidthOffset + (int)Math.ceil(dataFigureXLength * dataFigureScale) * gridXDataPosition; // TODO : Test xGrid
+		int dataYOffset = dataheigthOffset + (int)Math.ceil(dataFigureYSpacing);
 		
+		applet.textSize(textSize);
+		applet.fill(0, 255, 0);
+		applet.stroke(0, 255, 0);
+		
+		String variableName = variable.getName();
+		float lowerBound = variable.getLowerBound();
+		float upperBound = variable.getUpperBound();
+		float crispInput = variable.getCrispInput();
+		float[] fuzzifiedInputs = variable.getFuzzifiedInputs();
+		
+		applet.text(String.format("Input Variable: %s, (%.2f, %.2f)", variableName, lowerBound, upperBound), dataXOffset, dataYOffset+=spacing);
+		applet.text(String.format("Crisp Input: %.2f", crispInput), dataXOffset, dataYOffset+=spacing);
+		
+		for (int i = 0; i < variable.numberOfMembershipFunctions(); i++) {
+			applet.text(String.format("u1(%.2f): %.2f", crispInput, fuzzifiedInputs[i]), dataXOffset, dataYOffset+=spacing);
+		}
+		
+		dataheigthOffset = dataYOffset;
+		
+		return dataYOffset + 60;
 	}
 
 	private void drawInputData() {
-		// TODO Auto-generated method stub
+		Iterator<Entry<String, FuzzyVariable>> fuzzyVariablesIterator = this.fuzzyVariables.entrySet().iterator();
 		
+		while (fuzzyVariablesIterator.hasNext()) {
+	        Map.Entry<String, FuzzyVariable> fuzzyVariablePair = fuzzyVariablesIterator.next();
+		    
+	        FuzzyVariable fuzzyVariable = fuzzyVariablePair.getValue();
+	        
+	        if (fuzzyInputVariables.contains(fuzzyVariable.getName())) {
+	        	int nextYOffset = drawInputVaraible(fuzzyVariable);
+		        
+		        if (nextYOffset > windowHeigth - 150) {
+		        	gridXDataPosition++;
+		        	dataheigthOffset = dataHeightInitialOffset;
+		        }
+		        
+	        }
+		}
+	}
+
+	private void drawOutputData() {
+Iterator<Entry<String, FuzzyVariable>> fuzzyVariablesIterator = this.fuzzyVariables.entrySet().iterator();
+		
+		while (fuzzyVariablesIterator.hasNext()) {
+	        Map.Entry<String, FuzzyVariable> fuzzyVariablePair = fuzzyVariablesIterator.next();
+		    
+	        FuzzyVariable fuzzyVariable = fuzzyVariablePair.getValue();
+	        
+	        if (fuzzyOutputVariables.contains(fuzzyVariable.getName())) {
+	        	int nextYOffset = drawOutputVariable(fuzzyVariable);
+		        
+		        if (nextYOffset > windowHeigth - 150) {
+		        	gridXDataPosition++;
+		        	dataheigthOffset = dataHeightInitialOffset;
+		        }
+		        
+	        }
+		}	
 	}
 
 	public void drawInputFunctions() {
@@ -237,12 +329,12 @@ public class HUD {
 	        if (fuzzyInputVariables.contains(fuzzyVariable.getName())) {
 	        	int nextYOffset = drawInputFunction(fuzzyVariable);
 		        
+	        	gridYFunctionsPosition++;
+	        	
 		        if (nextYOffset > windowHeigth) {
-		        	gridXPosition++;
-		        	gridYPosition = 0;
+		        	gridXFunctionsPosition++;
+		        	gridYFunctionsPosition = 0;
 		        }
-		        
-		        gridYPosition++;
 	        }
 		}
 	}
@@ -257,32 +349,58 @@ public class HUD {
 	        
 	        if (fuzzyOutputVariables.contains(fuzzyVariable.getName())) {
 	        	int nextYOffset = drawOutputFunction(fuzzyVariable);
-		        
+
+	        	gridYFunctionsPosition++;
+    
 		        if (nextYOffset > windowHeigth) {
-		        	gridXPosition++;
-		        	gridYPosition = 0;
+		        	gridXFunctionsPosition++;
+		        	gridYFunctionsPosition = 0;
 		        }
-		        
-		        gridYPosition++;
-	        }
+		    }
 		}
 	}
 	
+	private void drawAssets() {
+		camera.beginHUD();
+		
+		applet.fill(0, 255, 0);
+		applet.stroke(0, 255, 0);
+		
+		applet.textSize(15);
+		applet.text(String.format("Observing: %s", nowObserving), 30, 30);
+		
+		applet.textSize(15);
+		applet.text(String.format("Next Vehicle: KEY_RIGHT"), 30, 700);
+		applet.text(String.format("Manual Takeover: KEY_UP"), 30, 720);
+		applet.text(String.format("TPS Camera: KEY_DOWNT"), 30, 740);
+		
+		camera.endHUD();
+		
+	}
+
+
 	public void draw() {
 		camera.beginHUD();
 		
 		drawInputFunctions();
 		drawInputData();
+		
 		drawOutputFunctions();
 		drawOutputData();
+		
 		camera.endHUD();
 		drawAssets();
 		
-		gridXPosition = 0;
-		gridYPosition = 0;
-	}
+		gridXFunctionsPosition = 0;
+		gridYFunctionsPosition = 0;
 		
-	public void setScale(float scale) {this.figureScale = scale;}
+		gridXDataPosition = 0;
+		
+		dataheigthOffset = dataHeightInitialOffset;
+	}
+	
+	
+	public void setScale(float scale) {this.functionsFigureScale = scale;}
 
 	public String getNowObserving() {
 		return nowObserving;
