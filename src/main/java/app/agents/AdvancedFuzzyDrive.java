@@ -150,19 +150,20 @@ public class AdvancedFuzzyDrive extends Automobile {
 
 	public HashMap<String, Float> separationSteeringInputs() {
 		float angle = 0;
-		float distance = 0;
+		float distance = 1000000;
 		float distanceTemp = 1000000;
 		float desiredseparation = 30;
 		
 		for (int i = 0; i < surroundings.size(); i++) {
 			Automobile other = (Automobile) surroundings.get(i);
+			
 			float d = PVector.dist(position, other.getPosition());
-
-			if ((d > 0) && (d < desiredseparation)) {
+			
+			if (!(other == this)/*(d > 0) && (d < desiredseparation)*/) {
 
 				if (d < distanceTemp) {
 					distance = d;
-					distanceTemp = d;
+					distanceTemp = distance;
 					
 					PVector orient1 = PVector.fromAngle(heading);
 					PVector orient2 = PVector.fromAngle(other.getHeading());
@@ -176,9 +177,13 @@ public class AdvancedFuzzyDrive extends Automobile {
 					}else {
 						angle = angle * angularErrorOrientation;
 					}
-					
+
 				}
 			}
+			
+			// System.out.println(String.format("%s, %d, %.2f, %.2f, %.2f", other, surroundings.size(),  distanceTemp, distance, d));	
+
+				
 		}
 
 		

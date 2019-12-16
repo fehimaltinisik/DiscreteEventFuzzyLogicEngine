@@ -270,7 +270,7 @@ public class HUD {
 		applet.text(String.format("Crisp Input: %.2f", crispInput), dataXOffset, dataYOffset+=spacing);
 		
 		for (int i = 0; i < variable.numberOfMembershipFunctions(); i++) {
-			applet.text(String.format("u1(%.2f): %.2f", crispInput, fuzzifiedInputs[i]), dataXOffset, dataYOffset+=spacing);
+			applet.text(String.format("u%d(%.2f): %.2f", i, crispInput, fuzzifiedInputs[i]), dataXOffset, dataYOffset+=spacing);
 		}
 		
 		dataheigthOffset = dataYOffset;

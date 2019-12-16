@@ -86,11 +86,11 @@ public class WorkspaceBuilder {
 			
 			boolean deployTestPath = false;
 			boolean deployReynoldsAgent = false;
-			boolean deployReynodlsAgents = true;
+			boolean deployReynodlsAgents = false;
 			boolean deployFuzzyDrivenVehicles = true;
 			
 			int numberOfReynodlsAgents = 20;
-			int numberOfFuzzyDrivenVehicles = 10;
+			int numberOfFuzzyDrivenVehicles = 20;
 			
 			if (deployTestPath) {
 				points = new ArrayList<>(Arrays.asList( 

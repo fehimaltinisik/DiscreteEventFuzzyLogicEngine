@@ -56,7 +56,7 @@ public class AdvancedDriving extends DrivingController{
 		solution.registerFuzzyVariable("steerFeedback", steerFeedback);
 		
 		FuzzyVariable separationDistance = solution.newFuzzyVariable("sptDistance", 0, 30, precision);
-		separationDistance.addMembershipFunction("trimf", 0, 30, 30);
+		separationDistance.addMembershipFunction("trimf", 0, 0, 30);
 		separationDistance.initFuzzyVariableDependencies();
 		solution.registerFuzzyVariable("sptDistance", separationDistance);
 		
@@ -125,10 +125,10 @@ public class AdvancedDriving extends DrivingController{
 		
 		// Advanced
 		solution.evalActivationOutput("sptLeft", 
-				"sptLeftOut", "and", 0, 0);
+				"sptLeftOut", "or", 0, 0);
 		
 		solution.evalActivationOutput("sptRight", 
-				"sptRight", "and", 0, 1);
+				"sptRightOut", "or", 0, 1);
 		
 		solution.activate("lateralleftANDangularleft", "lateralleftANDangularleftOut", "steer", 4);
 		solution.activate("lateralrightANDangularright", "lateralrightANDangularrightOut", "steer", 0);
@@ -159,6 +159,10 @@ public class AdvancedDriving extends DrivingController{
 		
 		solution.activate("lateralleftErrorCorrection", "lateralleftErrorCorrectionOut", "steer", 3);
 		solution.activate("lateralrightErrorCorrection", "lateralrightErrorCorrectionOut", "steer", 1);
+		
+		// solution.activate("sptLeft", "sptLeftOut", "steer", 3);
+		// solution.activate("sptRight", "sptRightOut", "steer", 1);
+		solution.activate("sptDistance", 0, "steer", 4);
 		
 		solution.aggregate("steer");
 	}
