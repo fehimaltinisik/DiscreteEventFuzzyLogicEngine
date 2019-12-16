@@ -183,7 +183,7 @@ public class WorkspaceBuilder {
 			fuzzyDrive.registerAsset("Path", path);
 			((Car) fuzzyDrive).setColor(255, 255, 0);
 			((Car) fuzzyDrive).setScale(0.5f);
-			((Car) fuzzyDrive).setMaxVelocity(2.5f);
+			((Car) fuzzyDrive).setMaxVelocity(1.5f);
 			((Car) fuzzyDrive).setObservable(true);
 			((Car) fuzzyDrive).setName("Basic Fuzzy Vehicle");
 			// ((Car) fuzzyDrive).toggleManualDriving();

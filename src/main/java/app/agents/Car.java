@@ -154,10 +154,9 @@ public class Car extends Agent implements Drivable, Interactable, Tracable, Expe
 		if (velocity.mag() < 0.05) {
 			velocity.sub(velocity);
 			return;
+		}else {
+			velocity.sub(velocity.mult(0.01f));
 		}
-		PVector force;
-		force = PVector.fromAngle(heading + PConstants.PI / 4);
-		acceleration.add(force);
 	}
 
 	@Override

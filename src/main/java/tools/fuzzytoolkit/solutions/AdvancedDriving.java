@@ -163,7 +163,8 @@ public class AdvancedDriving extends DrivingController{
 		// solution.activate("sptLeft", "sptLeftOut", "steer", 3);
 		// solution.activate("sptRight", "sptRightOut", "steer", 1);
 		solution.activate("sptDistance", 0, "steer", 4);
-		
+		//solution.activate("sptDistance", 0, "steer", 1);
+
 		solution.aggregate("steer");
 	}
 
