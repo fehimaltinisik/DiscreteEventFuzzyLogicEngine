@@ -1,2 +1,2 @@
 # DiscreteEventFuzzyLogicEngine
-A Discrete Event Simulation Engine for Testing Fuzzy Driven Autonomous Agents
+A Discrete Event Simulation Engine for Fuzzy Driven Autonomous Agents
